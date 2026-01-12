@@ -1,4 +1,5 @@
 import 'package:chat_app/Login_&_SignUp_page/login_Page.dart';
+import 'package:chat_app/home.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: Home(),
     );
-  }                                      // 
+  }                                      // 37:19
 }
