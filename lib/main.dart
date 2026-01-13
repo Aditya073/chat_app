@@ -1,5 +1,5 @@
-import 'package:chat_app/Login_&_SignUp_page/firebase_options.dart';
-import 'package:chat_app/Login_&_SignUp_page/login_Page.dart';
+import 'package:chat_app/presentation/screens/auth/firebase_options.dart';
+import 'package:chat_app/presentation/screens/auth/login_screen.dart';
 import 'package:chat_app/Pages/chat_page.dart';
 import 'package:chat_app/Pages/home.dart';
 import 'package:firebase_core/firebase_core.dart';

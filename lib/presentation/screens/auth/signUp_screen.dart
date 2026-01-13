@@ -1,14 +1,14 @@
-import 'package:chat_app/Login_&_SignUp_page/signUp_Page.dart';
+import 'package:chat_app/presentation/screens/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignupPage> createState() => _SignupPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: Column(
                       children: [
                         Text(
-                          'Sign In',
+                          'Sign Up',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -90,8 +90,42 @@ class _LoginPageState extends State<LoginPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        // text  (Email)
+                        // text  (Name)
                         margin: EdgeInsets.only(top: 40, left: 15, bottom: 15),
+                        child: TextWidget(text: 'Name'),
+                      ),
+
+                      Container(
+                        margin: EdgeInsets.only(
+                          left: 15,
+                          right: 15,
+                          bottom: 10,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 1.5,
+                            color: Colors.deepPurple.shade200,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+
+                        child: TextField(
+                          // Textfield  (Name)
+                          textAlign: TextAlign.start,
+                          textAlignVertical: TextAlignVertical.center,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            prefixIcon: Icon(
+                              Icons.person_2_outlined,
+                              color: Colors.deepPurple.shade300,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        // text  (Email)
+                        margin: EdgeInsets.only(top: 20, left: 15, bottom: 15),
                         child: TextWidget(text: 'Email'),
                       ),
 
@@ -134,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                         margin: EdgeInsets.only(
                           left: 15,
                           right: 15,
-                          bottom: 25,
+                          bottom: 15,
                         ),
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
@@ -159,20 +193,42 @@ class _LoginPageState extends State<LoginPage> {
                           obscureText: true, // Doesn't show the password
                         ),
                       ),
+                      Container(
+                        // text  (Conform Password)
+                        margin: EdgeInsets.only(top: 20, left: 15, bottom: 15),
+                        child: TextWidget(text: 'Conform Password'),
+                      ),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            'Forgot Password?',
-                            style: TextStyle(
+                      Container(
+                        margin: EdgeInsets.only(
+                          left: 15,
+                          right: 15,
+                          bottom: 25,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 1.5,
+                            color: Colors.deepPurple.shade200,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+
+                        child: TextField(
+                          // Textfield  (Conform Password)
+                          textAlign: TextAlign.start,
+                          textAlignVertical: TextAlignVertical.center,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            prefixIcon: Icon(
+                              Icons.password_outlined,
                               color: Colors.deepPurple.shade300,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
                             ),
                           ),
-                        ],
+                          obscureText: true, // Doesn't show the password
+                        ),
                       ),
+
                       SizedBox(height: 20),
                       Center(
                         child: Material(
@@ -191,7 +247,7 @@ class _LoginPageState extends State<LoginPage> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
-                              'Sign In',
+                              'Sign Up',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -210,7 +266,7 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Don\'t have an account? ',
+                  'Already have an account? ',
                   style: TextStyle(
                     color: Colors.black54,
                     fontWeight: FontWeight.w500,
@@ -221,11 +277,11 @@ class _LoginPageState extends State<LoginPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SignupPage()),
+                      MaterialPageRoute(builder: (context) => LoginPage()),
                     );
                   },
                   child: Text(
-                    ' Sign Up Now!',
+                    ' Sign Ip Now!',
                     style: TextStyle(
                       color: Colors.deepPurple,
                       fontWeight: FontWeight.w500,
@@ -237,23 +293,6 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class TextWidget extends StatelessWidget {
-  String text;
-  TextWidget({super.key, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
-        color: Colors.black,
-        fontWeight: FontWeight.w600,
-        fontSize: 20,
       ),
     );
   }
