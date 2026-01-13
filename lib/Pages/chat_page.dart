@@ -148,7 +148,6 @@ class _ChatPageState extends State<ChatPage> {
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                    // suffixIcon: Icon(Icons.send, color: Colors.grey),
                                   ),
                                 ),
                               ),
