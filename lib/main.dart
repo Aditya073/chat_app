@@ -1,3 +1,4 @@
+import 'package:chat_app/config/theme/app_theme.dart';
 import 'package:chat_app/presentation/screens/auth/firebase_options.dart';
 import 'package:chat_app/presentation/screens/auth/login_screen.dart';
 import 'package:chat_app/Pages/chat_page.dart';
@@ -11,13 +12,17 @@ void main() async {
   runApp(const MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: Home());
-  } // 37:19
+    return MaterialApp(
+      title: 'Chat App',
+      theme: AppTheme.lightTheme,
+      debugShowCheckedModeBanner: false,
+      home: LoginScreen(),
+    );
+  }
 }

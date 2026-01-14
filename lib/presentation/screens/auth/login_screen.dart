@@ -1,14 +1,19 @@
+import 'package:chat_app/core/common/custom_text_field.dart';
 import 'package:chat_app/presentation/screens/auth/signUp_screen.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginScreenState extends State<LoginScreen> {
+  final userEmailID = TextEditingController();
+  final userPassword = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,33 +100,38 @@ class _LoginPageState extends State<LoginPage> {
                         child: TextWidget(text: 'Email'),
                       ),
 
-                      Container(
-                        margin: EdgeInsets.only(
-                          left: 15,
-                          right: 15,
-                          bottom: 10,
-                        ),
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 1.5,
-                            color: Colors.deepPurple.shade200,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                      // Container(
+                      //   margin: EdgeInsets.only(
+                      //     left: 15,
+                      //     right: 15,
+                      //     bottom: 10,
+                      //   ),
+                      //   width: MediaQuery.of(context).size.width,
+                      //   decoration: BoxDecoration(
+                      //     border: Border.all(
+                      //       width: 1.5,
+                      //       color: Colors.deepPurple.shade200,
+                      //     ),
+                      //     borderRadius: BorderRadius.circular(10),
+                      //   ),
 
-                        child: TextField(
-                          // Textfield  (Email)
-                          textAlign: TextAlign.start,
-                          textAlignVertical: TextAlignVertical.center,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            prefixIcon: Icon(
-                              Icons.mail_outline,
-                              color: Colors.deepPurple.shade300,
-                            ),
-                          ),
-                        ),
+                      //   child: TextField(
+                      //     // Textfield  (Email)
+                      //     textAlign: TextAlign.start,
+                      //     textAlignVertical: TextAlignVertical.center,
+                      //     decoration: InputDecoration(
+                      //       border: InputBorder.none,
+                      //       prefixIcon: Icon(
+                      //         Icons.mail_outline,
+                      //         color: Colors.deepPurple.shade300,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      CustomTextField(
+                        controller: userEmailID,
+                        hintText: '',
+                        prefixIcon: Icon(Icons.mail_outline),
                       ),
 
                       Container(
@@ -130,34 +140,44 @@ class _LoginPageState extends State<LoginPage> {
                         child: TextWidget(text: 'Password'),
                       ),
 
-                      Container(
-                        margin: EdgeInsets.only(
-                          left: 15,
-                          right: 15,
-                          bottom: 25,
-                        ),
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 1.5,
-                            color: Colors.deepPurple.shade200,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                      // Container(
+                      //   margin: EdgeInsets.only(
+                      //     left: 15,
+                      //     right: 15,
+                      //     bottom: 25,
+                      //   ),
+                      //   width: MediaQuery.of(context).size.width,
+                      //   decoration: BoxDecoration(
+                      //     border: Border.all(
+                      //       width: 1.5,
+                      //       color: Colors.deepPurple.shade200,
+                      //     ),
+                      //     borderRadius: BorderRadius.circular(10),
+                      //   ),
 
-                        child: TextField(
-                          // Textfield  (Password)
-                          textAlign: TextAlign.start,
-                          textAlignVertical: TextAlignVertical.center,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            prefixIcon: Icon(
-                              Icons.password_outlined,
-                              color: Colors.deepPurple.shade300,
-                            ),
-                          ),
-                          obscureText: true, // Doesn't show the password
+                      //   child: TextField(
+                      //     // Textfield  (Password)
+                      //     textAlign: TextAlign.start,
+                      //     textAlignVertical: TextAlignVertical.center,
+                      //     decoration: InputDecoration(
+                      //       border: InputBorder.none,
+                      //       prefixIcon: Icon(
+                      //         Icons.lock_outline_rounded,
+                      //         color: Colors.deepPurple.shade300,
+                      //       ),
+                      //       // suffixIcon:
+                      //     ),
+                      //     obscureText: true, // Doesn't show the password
+                      //   ),
+                      // ),
+                      CustomTextField(
+                        controller: userEmailID,
+                        hintText: '',
+                        prefixIcon: Icon(
+                          Icons.lock_outline_rounded,
                         ),
+                        obscureText: true,
+                        suffixIcon: Icon(Icons.visibility),
                       ),
 
                       Row(
@@ -206,34 +226,61 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
             SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Don\'t have an account? ',
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                  ),
+
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Text(
+            //       'Don\'t have an account? ',
+            //       style: TextStyle(
+            //         color: Colors.black54,
+            //         fontWeight: FontWeight.w500,
+            //         fontSize: 16,
+            //       ),
+            //     ),
+            //     GestureDetector(
+            //       onTap: () {
+            //         Navigator.push(
+            //           context,
+            //           MaterialPageRoute(builder: (context) => SignupPage()),
+            //         );
+            //       },
+            //       child: Text(
+            //         ' Sign Up Now!',
+            //         style: TextStyle(
+            //           color: Colors.deepPurple,
+            //           fontWeight: FontWeight.w500,
+            //           fontSize: 16,
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            RichText(
+              text: TextSpan(
+                text: 'Don\'t have an account? ',
+                style: TextStyle(
+                  color: Colors.black54,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SignupPage()),
-                    );
-                  },
-                  child: Text(
-                    ' Sign Up Now!',
-                    style: TextStyle(
-                      color: Colors.deepPurple,
+                children: [
+                  TextSpan(
+                    text: ' Sign Up Now!',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Theme.of(context).primaryColor,
                       fontWeight: FontWeight.w500,
-                      fontSize: 16,
                     ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SignupPage()),
+                        );
+                      },
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

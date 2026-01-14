@@ -9,6 +9,10 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+  
+    final TextEditingController newUseEmailID = TextEditingController();
+    final TextEditingController newUsePassword = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -277,7 +281,7 @@ class _SignupPageState extends State<SignupPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
                     );
                   },
                   child: Text(
