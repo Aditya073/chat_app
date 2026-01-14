@@ -145,6 +145,7 @@ class _SignupPageState extends State<SignupPage> {
                       CustomTextField(
                         controller: newPhonenumber,
                         hintText: '',
+                        keyboardType: TextInputType.numberWithOptions(),
                         prefixIcon: Icon(Icons.phone),
                       ),
 
