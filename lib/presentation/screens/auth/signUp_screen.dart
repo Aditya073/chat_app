@@ -1,3 +1,4 @@
+import 'package:chat_app/core/common/custom_text_field.dart';
 import 'package:chat_app/presentation/screens/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -9,9 +10,21 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  
-    final TextEditingController newUseEmailID = TextEditingController();
-    final TextEditingController newUsePassword = TextEditingController();
+  final TextEditingController newName = TextEditingController();
+  final TextEditingController newUsername = TextEditingController();
+  final TextEditingController newEmailID = TextEditingController();
+  final TextEditingController newPhonenumber = TextEditingController();
+  final TextEditingController newPassword = TextEditingController();
+
+  @override
+  void dispose() {
+    newName.dispose();
+    newUsername.dispose();
+    newEmailID.dispose();
+    newPhonenumber.dispose();
+    newPassword.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,71 +108,44 @@ class _SignupPageState extends State<SignupPage> {
                     children: [
                       Container(
                         // text  (Name)
-                        margin: EdgeInsets.only(top: 40, left: 15, bottom: 15),
-                        child: TextWidget(text: 'Name'),
+                        margin: EdgeInsets.only(top: 30, left: 15, bottom: 15),
+                        child: TextWidget(text: 'Full name'),
                       ),
-
+                      CustomTextField(
+                        controller: newName,
+                        hintText: '',
+                        prefixIcon: Icon(Icons.person_2_outlined),
+                      ),
                       Container(
-                        margin: EdgeInsets.only(
-                          left: 15,
-                          right: 15,
-                          bottom: 10,
-                        ),
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 1.5,
-                            color: Colors.deepPurple.shade200,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-
-                        child: TextField(
-                          // Textfield  (Name)
-                          textAlign: TextAlign.start,
-                          textAlignVertical: TextAlignVertical.center,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            prefixIcon: Icon(
-                              Icons.person_2_outlined,
-                              color: Colors.deepPurple.shade300,
-                            ),
-                          ),
-                        ),
+                        // text  (Name)
+                        margin: EdgeInsets.only(top: 20, left: 15, bottom: 15),
+                        child: TextWidget(text: 'Username'),
                       ),
+                      CustomTextField(
+                        controller: newUsername,
+                        hintText: '',
+                        prefixIcon: Icon(Icons.alternate_email),
+                      ),
+
                       Container(
                         // text  (Email)
                         margin: EdgeInsets.only(top: 20, left: 15, bottom: 15),
                         child: TextWidget(text: 'Email'),
                       ),
-
+                      CustomTextField(
+                        controller: newEmailID,
+                        hintText: '',
+                        prefixIcon: Icon(Icons.mail_outline_outlined),
+                      ),
                       Container(
-                        margin: EdgeInsets.only(
-                          left: 15,
-                          right: 15,
-                          bottom: 10,
-                        ),
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 1.5,
-                            color: Colors.deepPurple.shade200,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-
-                        child: TextField(
-                          // Textfield  (Email)
-                          textAlign: TextAlign.start,
-                          textAlignVertical: TextAlignVertical.center,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            prefixIcon: Icon(
-                              Icons.mail_outline,
-                              color: Colors.deepPurple.shade300,
-                            ),
-                          ),
-                        ),
+                        // text  (Email)
+                        margin: EdgeInsets.only(top: 20, left: 15, bottom: 15),
+                        child: TextWidget(text: 'Phone number'),
+                      ),
+                      CustomTextField(
+                        controller: newPhonenumber,
+                        hintText: '',
+                        prefixIcon: Icon(Icons.phone),
                       ),
 
                       Container(
@@ -168,69 +154,12 @@ class _SignupPageState extends State<SignupPage> {
                         child: TextWidget(text: 'Password'),
                       ),
 
-                      Container(
-                        margin: EdgeInsets.only(
-                          left: 15,
-                          right: 15,
-                          bottom: 15,
-                        ),
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 1.5,
-                            color: Colors.deepPurple.shade200,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-
-                        child: TextField(
-                          // Textfield  (Password)
-                          textAlign: TextAlign.start,
-                          textAlignVertical: TextAlignVertical.center,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            prefixIcon: Icon(
-                              Icons.password_outlined,
-                              color: Colors.deepPurple.shade300,
-                            ),
-                          ),
-                          obscureText: true, // Doesn't show the password
-                        ),
-                      ),
-                      Container(
-                        // text  (Conform Password)
-                        margin: EdgeInsets.only(top: 20, left: 15, bottom: 15),
-                        child: TextWidget(text: 'Conform Password'),
-                      ),
-
-                      Container(
-                        margin: EdgeInsets.only(
-                          left: 15,
-                          right: 15,
-                          bottom: 25,
-                        ),
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 1.5,
-                            color: Colors.deepPurple.shade200,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-
-                        child: TextField(
-                          // Textfield  (Conform Password)
-                          textAlign: TextAlign.start,
-                          textAlignVertical: TextAlignVertical.center,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            prefixIcon: Icon(
-                              Icons.password_outlined,
-                              color: Colors.deepPurple.shade300,
-                            ),
-                          ),
-                          obscureText: true, // Doesn't show the password
-                        ),
+                      CustomTextField(
+                        controller: newPassword,
+                        hintText: '',
+                        prefixIcon: Icon(Icons.lock_outline_rounded),
+                        obscureText: true,
+                        suffixIcon: Icon(Icons.visibility),
                       ),
 
                       SizedBox(height: 20),

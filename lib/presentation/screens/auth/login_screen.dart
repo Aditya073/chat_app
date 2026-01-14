@@ -15,6 +15,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final userPassword = TextEditingController();
 
   @override
+  void dispose() {
+    userEmailID.dispose();
+    userPassword.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
@@ -100,34 +107,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: TextWidget(text: 'Email'),
                       ),
 
-                      // Container(
-                      //   margin: EdgeInsets.only(
-                      //     left: 15,
-                      //     right: 15,
-                      //     bottom: 10,
-                      //   ),
-                      //   width: MediaQuery.of(context).size.width,
-                      //   decoration: BoxDecoration(
-                      //     border: Border.all(
-                      //       width: 1.5,
-                      //       color: Colors.deepPurple.shade200,
-                      //     ),
-                      //     borderRadius: BorderRadius.circular(10),
-                      //   ),
-
-                      //   child: TextField(
-                      //     // Textfield  (Email)
-                      //     textAlign: TextAlign.start,
-                      //     textAlignVertical: TextAlignVertical.center,
-                      //     decoration: InputDecoration(
-                      //       border: InputBorder.none,
-                      //       prefixIcon: Icon(
-                      //         Icons.mail_outline,
-                      //         color: Colors.deepPurple.shade300,
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                       CustomTextField(
                         controller: userEmailID,
                         hintText: '',
@@ -140,42 +119,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: TextWidget(text: 'Password'),
                       ),
 
-                      // Container(
-                      //   margin: EdgeInsets.only(
-                      //     left: 15,
-                      //     right: 15,
-                      //     bottom: 25,
-                      //   ),
-                      //   width: MediaQuery.of(context).size.width,
-                      //   decoration: BoxDecoration(
-                      //     border: Border.all(
-                      //       width: 1.5,
-                      //       color: Colors.deepPurple.shade200,
-                      //     ),
-                      //     borderRadius: BorderRadius.circular(10),
-                      //   ),
-
-                      //   child: TextField(
-                      //     // Textfield  (Password)
-                      //     textAlign: TextAlign.start,
-                      //     textAlignVertical: TextAlignVertical.center,
-                      //     decoration: InputDecoration(
-                      //       border: InputBorder.none,
-                      //       prefixIcon: Icon(
-                      //         Icons.lock_outline_rounded,
-                      //         color: Colors.deepPurple.shade300,
-                      //       ),
-                      //       // suffixIcon:
-                      //     ),
-                      //     obscureText: true, // Doesn't show the password
-                      //   ),
-                      // ),
                       CustomTextField(
                         controller: userEmailID,
                         hintText: '',
-                        prefixIcon: Icon(
-                          Icons.lock_outline_rounded,
-                        ),
+                        prefixIcon: Icon(Icons.lock_outline_rounded),
                         obscureText: true,
                         suffixIcon: Icon(Icons.visibility),
                       ),
@@ -227,35 +174,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SizedBox(height: 40),
 
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     Text(
-            //       'Don\'t have an account? ',
-            //       style: TextStyle(
-            //         color: Colors.black54,
-            //         fontWeight: FontWeight.w500,
-            //         fontSize: 16,
-            //       ),
-            //     ),
-            //     GestureDetector(
-            //       onTap: () {
-            //         Navigator.push(
-            //           context,
-            //           MaterialPageRoute(builder: (context) => SignupPage()),
-            //         );
-            //       },
-            //       child: Text(
-            //         ' Sign Up Now!',
-            //         style: TextStyle(
-            //           color: Colors.deepPurple,
-            //           fontWeight: FontWeight.w500,
-            //           fontSize: 16,
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
             RichText(
               text: TextSpan(
                 text: 'Don\'t have an account? ',
