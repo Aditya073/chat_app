@@ -11,196 +11,251 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formkey = GlobalKey<FormState>();
   final userEmailID = TextEditingController();
   final userPassword = TextEditingController();
+
+  bool _isPasswordVisibal = true;
+
+  final _emailFocus = FocusNode();
+  final _passwordFocus = FocusNode();
 
   @override
   void dispose() {
     userEmailID.dispose();
     userPassword.dispose();
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
     super.dispose();
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your Email';
+    }
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (!emailRegex.hasMatch(value)) {
+      return 'Please enter a valid email address';
+    }
+    return null;
+  }
+
+  // Password validation
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a password';
+    }
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters long';
+    }
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
-              // to overlap the containers
-              children: [
-                Container(
-                  // Design of the container
-                  height: MediaQuery.of(context).size.height / 3.5,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.deepPurple.shade700,
-                        Colors.deepPurple.shade500,
-                        Colors.blueAccent.shade400,
-                        Colors.blueAccent.shade200,
-                      ],
-                    ),
-                    borderRadius: BorderRadius.vertical(
-                      bottom: Radius.elliptical(
-                        MediaQuery.of(context).size.width,
-                        120,
+      body: Form(
+        key: _formkey,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Stack(
+                // to overlap the containers
+                children: [
+                  Container(
+                    // Design of the container
+                    height: MediaQuery.of(context).size.height / 3.5,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.deepPurple.shade700,
+                          Colors.deepPurple.shade500,
+                          Colors.blueAccent.shade400,
+                          Colors.blueAccent.shade200,
+                        ],
                       ),
-                    ),
-                  ),
-
-                  // main content of the container
-                  child: SafeArea(
-                    child: Column(
-                      children: [
-                        Text(
-                          'Sign In',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 26,
-                          ),
+                      borderRadius: BorderRadius.vertical(
+                        bottom: Radius.elliptical(
+                          MediaQuery.of(context).size.width,
+                          120,
                         ),
-                        Text(
-                          'Login to your account',
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
 
-                Container(
-                  // Design of the container
-                  margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height / 5.0,
-                    left: 20,
-                    right: 20,
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-
-                  // height: MediaQuery.of(context).size.height / 2.0,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 239, 238, 238),
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-
-                  // main content of the container
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        // text  (Email)
-                        margin: EdgeInsets.only(top: 40, left: 15, bottom: 15),
-                        child: TextWidget(text: 'Email'),
-                      ),
-
-                      CustomTextField(
-                        controller: userEmailID,
-                        hintText: '',
-                        prefixIcon: Icon(Icons.mail_outline),
-                      ),
-
-                      Container(
-                        // text  (Password)
-                        margin: EdgeInsets.only(top: 20, left: 15, bottom: 15),
-                        child: TextWidget(text: 'Password'),
-                      ),
-
-                      CustomTextField(
-                        controller: userEmailID,
-                        hintText: '',
-                        prefixIcon: Icon(Icons.lock_outline_rounded),
-                        obscureText: true,
-                        suffixIcon: Icon(Icons.visibility),
-                      ),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                    // main content of the container
+                    child: SafeArea(
+                      child: Column(
                         children: [
                           Text(
-                            'Forgot Password?',
+                            'Sign In',
                             style: TextStyle(
-                              color: Colors.deepPurple.shade300,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 26,
                             ),
+                          ),
+                          Text(
+                            'Login to your account',
+                            style: TextStyle(color: Colors.white, fontSize: 20),
                           ),
                         ],
                       ),
-                      SizedBox(height: 20),
-                      Center(
-                        child: Material(
-                          elevation: 5,
-                          borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
 
-                          child: Container(
-                            padding: EdgeInsets.only(
-                              top: 10,
-                              bottom: 10,
-                              left: 30,
-                              right: 30,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Color(0xff6380fb),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              'Sign In',
+                  Container(
+                    // Design of the container
+                    margin: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height / 5.0,
+                      left: 20,
+                      right: 20,
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+
+                    // height: MediaQuery.of(context).size.height / 2.0,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 239, 238, 238),
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+
+                    // main content of the container
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          // text  (Email)
+                          margin: EdgeInsets.only(
+                            top: 40,
+                            left: 15,
+                            bottom: 15,
+                          ),
+                          child: TextWidget(text: 'Email'),
+                        ),
+                        CustomTextField(
+                          controller: userEmailID,
+                          hintText: '',
+                          focusNode: _emailFocus,
+                          validator: _validateEmail,
+                          prefixIcon: Icon(Icons.mail_outline),
+                        ),
+
+                        Container(
+                          // text  (Password)
+                          margin: EdgeInsets.only(
+                            top: 20,
+                            left: 15,
+                            bottom: 15,
+                          ),
+                          child: TextWidget(text: 'Password'),
+                        ),
+                        CustomTextField(
+                          controller: userPassword,
+                          hintText: '',
+                          focusNode: _passwordFocus,
+                          validator: _validatePassword,
+                          prefixIcon: Icon(Icons.lock_outline_rounded),
+                          obscureText: _isPasswordVisibal,
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _isPasswordVisibal = !_isPasswordVisibal;
+                              });
+                            },
+                            icon: Icon(Icons.visibility),
+                          ),
+                        ),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Forgot Password?',
                               style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: Colors.deepPurple.shade300,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20),
+                        Center(
+                          child: Material(
+                            elevation: 5,
+                            borderRadius: BorderRadius.circular(10),
+
+                            child: Container(
+                              padding: EdgeInsets.only(
+                                top: 10,
+                                bottom: 10,
+                                left: 30,
+                                right: 30,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Color(0xff6380fb),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                'Sign In',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 40),
-
-            RichText(
-              text: TextSpan(
-                text: 'Don\'t have an account? ',
-                style: TextStyle(
-                  color: Colors.black54,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                ),
-                children: [
-                  TextSpan(
-                    text: ' Sign Up Now!',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.w500,
+                      ],
                     ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SignupPage()),
-                        );
-                      },
                   ),
                 ],
               ),
-            ),
-          ],
+              SizedBox(height: 40),
+
+              RichText(
+                text: TextSpan(
+                  text: 'Don\'t have an account? ',
+                  style: TextStyle(
+                    color: Colors.black54,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: ' Sign Up Now!',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          FocusScope.of(context).unfocus();
+                          if (_formkey.currentState?.validate() ?? false) {}
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SignupPage(),
+                            ),
+                          );
+                        },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
