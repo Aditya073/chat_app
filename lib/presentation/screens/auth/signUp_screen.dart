@@ -263,7 +263,7 @@ class _SignupPageState extends State<SignupPage> {
                                 _isPasswordVisibal = !_isPasswordVisibal;
                               });
                             },
-                            icon: Icon(Icons.visibility),
+                            icon: _isPasswordVisibal ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
                           ),
                         ),
 
@@ -336,35 +336,6 @@ class _SignupPageState extends State<SignupPage> {
                   ],
                 ),
               ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     Text(
-              //       // 'Already have an account? ',
-              //       style: TextStyle(
-              //         color: Colors.black54,
-              //         fontWeight: FontWeight.w500,
-              //         fontSize: 16,
-              //       ),
-              //     ),
-              //     GestureDetector(
-              //       onTap: () {
-              //         Navigator.push(
-              //           context,
-              //           MaterialPageRoute(builder: (context) => LoginScreen()),
-              //         );
-              //       },
-              //       child: Text(
-              //         // ' Sign In Now!',
-              //         style: TextStyle(
-              //           color: Colors.deepPurple,
-              //           fontWeight: FontWeight.w500,
-              //           fontSize: 16,
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
             ],
           ),
         ),

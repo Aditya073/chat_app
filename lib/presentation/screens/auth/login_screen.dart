@@ -172,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 _isPasswordVisibal = !_isPasswordVisibal;
                               });
                             },
-                            icon: Icon(Icons.visibility),
+                            icon: _isPasswordVisibal ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
                           ),
                         ),
 
