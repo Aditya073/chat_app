@@ -1,4 +1,6 @@
+import 'package:chat_app/Pages/home.dart';
 import 'package:chat_app/core/common/custom_text_field.dart';
+import 'package:chat_app/data/repositories/auth_repo.dart';
 import 'package:chat_app/presentation/screens/auth/signUp_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,26 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final _emailFocus = FocusNode();
   final _passwordFocus = FocusNode();
+
+  Future<void> handleSignIn() async {
+    // First we check if all the Textfields are field with valid info
+    FocusScope.of(context).unfocus();
+    if (_formkey.currentState?.validate() ?? false) {
+      // then we call the "AuthRepo()" class to access the "signUp()" method
+      final exestingUser = await AuthRepo().signIn(
+        email: userEmailID.text.trim(),
+        password: userPassword.text.trim(),
+      );
+
+      print(exestingUser.fullName);
+      print(exestingUser.userName);
+      print(exestingUser.email);
+      print(exestingUser.phoneNumber);
+      print(exestingUser.password);
+      
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+    }
+  }
 
   @override
   void dispose() {
@@ -172,7 +194,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 _isPasswordVisibal = !_isPasswordVisibal;
                               });
                             },
-                            icon: _isPasswordVisibal ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
+                            icon: _isPasswordVisibal
+                                ? Icon(Icons.visibility_off)
+                                : Icon(Icons.visibility),
                           ),
                         ),
 
@@ -195,22 +219,27 @@ class _LoginScreenState extends State<LoginScreen> {
                             elevation: 5,
                             borderRadius: BorderRadius.circular(10),
 
-                            child: Container(
-                              padding: EdgeInsets.only(
-                                top: 10,
-                                bottom: 10,
-                                left: 30,
-                                right: 30,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Color(0xff6380fb),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                'Sign In',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                            child: GestureDetector(
+                              onTap: () {
+                                handleSignIn();
+                              },
+                              child: Container(
+                                padding: EdgeInsets.only(
+                                  top: 10,
+                                  bottom: 10,
+                                  left: 30,
+                                  right: 30,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Color(0xff6380fb),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  'Sign In',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),

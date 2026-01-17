@@ -1,7 +1,6 @@
 import 'package:chat_app/Pages/home.dart';
 import 'package:chat_app/core/common/custom_text_field.dart';
 import 'package:chat_app/data/repositories/auth_repo.dart';
-import 'package:chat_app/data/repositories/auth_repositorie.dart';
 import 'package:chat_app/presentation/screens/auth/login_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -109,7 +108,7 @@ class _SignupPageState extends State<SignupPage> {
       print(newUser.email);
       print(newUser.phoneNumber);
       print(newUser.password);
-      
+
       Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
     }
   }
