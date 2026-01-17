@@ -5,6 +5,7 @@ class UserModel {
   final String userName;
   final String fullName;
   final String email;
+  final String password;
   final String phoneNumber;
   final bool isOnline;
   final Timestamp lastSeen;
@@ -17,6 +18,7 @@ class UserModel {
     required this.userName,
     required this.fullName,
     required this.email,
+    required this.password,
     required this.phoneNumber,
     this.isOnline = false,
     Timestamp? lastSeen,
@@ -33,7 +35,8 @@ class UserModel {
       userName: data["Username"],
       fullName: data["Fullname"],
       email: data["Email"],
-      phoneNumber: data["phoneNumber"],
+      password: data['Password'],
+      phoneNumber: data["PhoneNumber"],
       lastSeen: data["LastSeen"],
       isOnline: data["isOnline"],
       createdAt: data["createdAt"],
@@ -47,8 +50,9 @@ class UserModel {
       'Uid': uid,
       'Username': userName,
       'Fullname': fullName,
-      'Email': userName,
-      'phoneNumber': phoneNumber,
+      'Email': email,
+      'Password': password,
+      'PhoneNumber': phoneNumber,
       'isOnline': isOnline,
       'LastSeen': lastSeen,
       'createdAt': createdAt,

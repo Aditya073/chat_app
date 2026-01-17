@@ -1,4 +1,7 @@
+import 'package:chat_app/Pages/home.dart';
 import 'package:chat_app/core/common/custom_text_field.dart';
+import 'package:chat_app/data/repositories/auth_repo.dart';
+import 'package:chat_app/data/repositories/auth_repositorie.dart';
 import 'package:chat_app/presentation/screens/auth/login_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -89,6 +92,28 @@ class _SignupPageState extends State<SignupPage> {
     return null;
   }
 
+  Future<void> handleSignUp() async {
+    // First we check if all the Textfields are field with valid info
+    FocusScope.of(context).unfocus();
+    if (_formkey.currentState?.validate() ?? false) {
+      // then we call the "AuthRepo()" class to access the "signUp()" method
+      final newUser = await AuthRepo().signUp(
+        fullName: newName.text.trim(),
+        userName: newUsername.text.trim(),
+        email: newEmailID.text,
+        phoneNumber: newPhonenumber.text.trim(),
+        password: newPassword.text.trim(),
+      );
+      print(newUser.fullName);
+      print(newUser.userName);
+      print(newUser.email);
+      print(newUser.phoneNumber);
+      print(newUser.password);
+      
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -172,7 +197,7 @@ class _SignupPageState extends State<SignupPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          // text  (Name)
+                          // text  (Full Name)
                           margin: EdgeInsets.only(
                             top: 10,
                             left: 15,
@@ -263,7 +288,9 @@ class _SignupPageState extends State<SignupPage> {
                                 _isPasswordVisibal = !_isPasswordVisibal;
                               });
                             },
-                            icon: _isPasswordVisibal ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
+                            icon: _isPasswordVisibal
+                                ? Icon(Icons.visibility_off)
+                                : Icon(Icons.visibility),
                           ),
                         ),
 
@@ -275,9 +302,9 @@ class _SignupPageState extends State<SignupPage> {
 
                             child: GestureDetector(
                               onTap: () {
-                                FocusScope.of(context).unfocus();
-                                if (_formkey.currentState?.validate() ??
-                                    false) {}
+                                // calling the Signup function
+                                handleSignUp();
+                                // CircularProgressIndicator();
                               },
                               child: Container(
                                 padding: EdgeInsets.only(
