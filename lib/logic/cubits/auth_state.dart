@@ -9,22 +9,20 @@ enum AuthStatus {
   error,
 }
 
-class AuthState extends Equatable{
+class AuthState extends Equatable {
   final AuthStatus status;
   final UserModel? user;
   final String? error;
-
   const AuthState({
     this.status = AuthStatus.initial,
     this.user,
-    required this.error,
+    this.error,
   });
-
 
   AuthState copyWith({
     AuthStatus? status,
     UserModel? user,
-    String? error, required String errorMessage,
+    String? error,
   }) {
     return AuthState(
       status: status ?? this.status,
@@ -32,8 +30,7 @@ class AuthState extends Equatable{
       error: error ?? this.error,
     );
   }
-  
+
   @override
   List<Object?> get props => [status, user, error];
-
 }

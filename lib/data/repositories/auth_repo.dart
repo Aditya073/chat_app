@@ -7,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthRepo extends BaseRepositories {
   late final user;
 
+  Stream<User?> get authStateChanges => auth.authStateChanges();
+
   signUp({
     required String fullName,
     required String userName,
@@ -63,26 +65,22 @@ class AuthRepo extends BaseRepositories {
     }
   }
 
- Future<UserModel> getUserData(String uid) async {
-  try {
-    final doc = await firestore.collection("users").doc(uid).get();
+  Future<UserModel> getUserData(String uid) async {
+    try {
+      final doc = await firestore.collection("users").doc(uid).get();
 
-    if (!doc.exists) {
-      throw Exception("User data not found in Firestore");
+      if (!doc.exists) {
+        throw Exception("User data not found in Firestore");
+      }
+
+      log("User document fetched: ${doc.id}");
+      return UserModel.fromFirestore(doc);
+    } catch (e, stackTrace) {
+      log("Firestore error: $e");
+      log("Stacktrace: $stackTrace");
+      rethrow;
     }
-
-    log("User document fetched: ${doc.id}");
-    return UserModel.fromFirestore(doc);
-  } catch (e, stackTrace) {
-    log("Firestore error: $e");
-    log("Stacktrace: $stackTrace");
-    rethrow;
   }
-}
 
-
-Future<void> signOut(String uid)async{
-  
-}
-
+  Future<void> signOut(String uid) async {}
 }
