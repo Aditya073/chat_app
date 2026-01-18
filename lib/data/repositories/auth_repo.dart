@@ -80,4 +80,9 @@ class AuthRepo extends BaseRepositories {
   }
 }
 
+
+Future<void> signOut(String uid)async{
+  
+}
+
 }
