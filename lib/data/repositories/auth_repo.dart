@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chat_app/data/models/user_model.dart';
 import 'package:chat_app/data/services/base_repositories.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthRepo extends BaseRepositories {
   late final user;
 
-  Future<UserModel> signUp({
+  signUp({
     required String fullName,
     required String userName,
     required String email,
@@ -19,7 +21,7 @@ class AuthRepo extends BaseRepositories {
         password: password,
       );
       if (createUser.user == null) {
-        throw "Failed to create user";
+        return "Failed to create user";
       }
 
       // the user model is created so we can send this to the firestore database
@@ -36,7 +38,7 @@ class AuthRepo extends BaseRepositories {
         // this adds the user info on firebase
         await firestore.collection("users").doc(user.uid).set(user.toMap());
       } catch (e) {
-        throw "User already exists";
+        return "User already exists";
       }
     } catch (e) {
       print(e.toString());
@@ -44,23 +46,38 @@ class AuthRepo extends BaseRepositories {
     return user; // and we return the usermodel from this function
   }
 
-  Future<UserModel> signIn({required String email, required String password}) async {
-
-    // using a firebase method to verify the email and password
-    final userCredential = await auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-
+  signIn({required String email, required String password}) async {
     try {
-      final doc = await firestore.collection("users").doc(userCredential.user!.uid).get();
-      if (!doc.exists) {
-        throw "User does not exists";
+      final userCredential = await auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      if (userCredential.user == null) {
+        return "User not found";
       }
-      return UserModel.fromFirestore(doc);
+      final userData = await getUserData(userCredential.user!.uid);
+      return userData;
     } catch (e) {
-      throw "Failed to create user";
+      log(e.toString());
+      rethrow;
     }
-    
   }
+
+ Future<UserModel> getUserData(String uid) async {
+  try {
+    final doc = await firestore.collection("users").doc(uid).get();
+
+    if (!doc.exists) {
+      throw Exception("User data not found in Firestore");
+    }
+
+    log("User document fetched: ${doc.id}");
+    return UserModel.fromFirestore(doc);
+  } catch (e, stackTrace) {
+    log("Firestore error: $e");
+    log("Stacktrace: $stackTrace");
+    rethrow;
+  }
+}
+
 }

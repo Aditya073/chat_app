@@ -26,19 +26,36 @@ class _LoginScreenState extends State<LoginScreen> {
     // First we check if all the Textfields are field with valid info
     FocusScope.of(context).unfocus();
     if (_formkey.currentState?.validate() ?? false) {
-      // then we call the "AuthRepo()" class to access the "signUp()" method
+      // then we call the "AuthRepo()" class to access the "signIn()" method
       final exestingUser = await AuthRepo().signIn(
         email: userEmailID.text.trim(),
         password: userPassword.text.trim(),
       );
+      if (exestingUser == "User not found") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.redAccent,
+            content: Text("User not found", style: TextStyle(fontSize: 20)),
+          ),
+        );
+      } else {
+        print(exestingUser.fullName);
+        print(exestingUser.userName);
+        print(exestingUser.email);
+        print(exestingUser.phoneNumber);
+        print(exestingUser.password);
 
-      print(exestingUser.fullName);
-      print(exestingUser.userName);
-      print(exestingUser.email);
-      print(exestingUser.phoneNumber);
-      print(exestingUser.password);
-      
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.greenAccent,
+            content: Text('Login Successfully', style: TextStyle(fontSize: 20)),
+          ),
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Home()),
+        );
+      }
     }
   }
 

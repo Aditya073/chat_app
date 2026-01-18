@@ -10,7 +10,7 @@ class UserModel {
   final bool isOnline;
   final Timestamp lastSeen;
   final Timestamp createdAt;
-  final String? fcmTocken;
+  final String? fcmToken;
   final List<String> blockedUsers;
 
   UserModel({
@@ -23,41 +23,46 @@ class UserModel {
     this.isOnline = false,
     Timestamp? lastSeen,
     Timestamp? createdAt,
-    this.fcmTocken,
-    this.blockedUsers = const [],
-  }) : lastSeen = lastSeen ?? Timestamp.now(),
-       createdAt = createdAt ?? Timestamp.now();
+    this.fcmToken,
+    List<String>? blockedUsers,
+  })  : lastSeen = lastSeen ?? Timestamp.now(),
+        createdAt = createdAt ?? Timestamp.now(),
+        blockedUsers = blockedUsers ?? [];
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
+
     return UserModel(
       uid: doc.id,
-      userName: data["Username"],
-      fullName: data["Fullname"],
-      email: data["Email"],
-      password: data['Password'],
-      phoneNumber: data["PhoneNumber"],
-      lastSeen: data["LastSeen"],
-      isOnline: data["isOnline"],
-      createdAt: data["createdAt"],
-      blockedUsers: data["BlockedUsers"],
-      fcmTocken: data["fcmTocken"],
+      userName: data["userName"] ?? '',
+      fullName: data["fullName"] ?? '',
+      email: data["email"] ?? '',
+      password: data["password"] ?? '',
+      phoneNumber: data["phoneNumber"] ?? '',
+      isOnline: data["isOnline"] ?? false,
+      lastSeen: data["lastSeen"] ?? Timestamp.now(),
+      createdAt: data["createdAt"] ?? Timestamp.now(),
+
+      // ✅ SAFE LIST PARSING (NO MORE CRASH)
+      blockedUsers: List<String>.from(data["blockedUsers"] ?? []),
+
+      fcmToken: data["fcmToken"],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'Uid': uid,
-      'Username': userName,
-      'Fullname': fullName,
-      'Email': email,
-      'Password': password,
-      'PhoneNumber': phoneNumber,
-      'isOnline': isOnline,
-      'LastSeen': lastSeen,
-      'createdAt': createdAt,
-      'fcmTocken': fcmTocken,
-      'BlockedUsers': blockedUsers,
+      "uid": uid,
+      "userName": userName,
+      "fullName": fullName,
+      "email": email,
+      "password": password,
+      "phoneNumber": phoneNumber,
+      "isOnline": isOnline,
+      "lastSeen": lastSeen,
+      "createdAt": createdAt,
+      "fcmToken": fcmToken,
+      "blockedUsers": blockedUsers,
     };
   }
 }

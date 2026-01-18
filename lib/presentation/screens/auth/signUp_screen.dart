@@ -97,19 +97,36 @@ class _SignupPageState extends State<SignupPage> {
     if (_formkey.currentState?.validate() ?? false) {
       // then we call the "AuthRepo()" class to access the "signUp()" method
       final newUser = await AuthRepo().signUp(
-        fullName: newName.text.trim(),
-        userName: newUsername.text.trim(),
+        fullName: newName.text,
+        userName: newUsername.text,
         email: newEmailID.text,
         phoneNumber: newPhonenumber.text.trim(),
         password: newPassword.text.trim(),
       );
-      print(newUser.fullName);
-      print(newUser.userName);
-      print(newUser.email);
-      print(newUser.phoneNumber);
-      print(newUser.password);
 
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+      if (newUser == "Failed to create user" ||
+          newUser == "User already exists") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.redAccent,
+            content: Text(
+              "User Already exesists",
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
+        );
+      } else {
+        print(newUser.fullName);
+        print(newUser.userName);
+        print(newUser.email);
+        print(newUser.phoneNumber);
+        print(newUser.password);
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Home()),
+        );
+      }
     }
   }
 
