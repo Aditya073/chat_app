@@ -1,9 +1,12 @@
 import 'package:chat_app/Pages/home.dart';
 import 'package:chat_app/core/common/custom_text_field.dart';
 import 'package:chat_app/data/repositories/auth_repo.dart';
+import 'package:chat_app/logic/cubits/auth_cubit.dart';
+import 'package:chat_app/logic/cubits/auth_state.dart';
 import 'package:chat_app/presentation/screens/auth/signUp_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -27,35 +30,35 @@ class _LoginScreenState extends State<LoginScreen> {
     FocusScope.of(context).unfocus();
     if (_formkey.currentState?.validate() ?? false) {
       // then we call the "AuthRepo()" class to access the "signIn()" method
-      final exestingUser = await AuthRepo().signIn(
+      context.read<AuthCubit>().signIn(
         email: userEmailID.text.trim(),
         password: userPassword.text.trim(),
       );
-      if (exestingUser == "User not found") {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.redAccent,
-            content: Text("User not found", style: TextStyle(fontSize: 20)),
-          ),
-        );
-      } else {
-        print(exestingUser.fullName);
-        print(exestingUser.userName);
-        print(exestingUser.email);
-        print(exestingUser.phoneNumber);
-        print(exestingUser.password);
+      // if (exestingUser == "User not found") {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(
+      //       backgroundColor: Colors.redAccent,
+      //       content: Text("User not found", style: TextStyle(fontSize: 20)),
+      //     ),
+      //   );
+      // } else {
+      //   print(exestingUser.fullName);
+      //   print(exestingUser.userName);
+      //   print(exestingUser.email);
+      //   print(exestingUser.phoneNumber);
+      //   print(exestingUser.password);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.greenAccent,
-            content: Text('Login Successfully', style: TextStyle(fontSize: 20)),
-          ),
-        );
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Home()),
-        );
-      }
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(
+      //       backgroundColor: Colors.greenAccent,
+      //       content: Text('Login Successfully', style: TextStyle(fontSize: 20)),
+      //     ),
+      //   );
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => Home()),
+      //   );
+      // }
     }
   }
 
@@ -92,7 +95,27 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocListener<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state.status == AuthStatus.loading) {
+          // optional: show loader
+          Center(child: CircularProgressIndicator());
+        }
+
+        if (state.status == AuthStatus.authenticated) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const Home()),
+          );
+        }
+
+        if (state.status == AuthStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.error ?? 'Something went wrong')),
+          );
+        }
+      },
+      child: Scaffold(
       body: Form(
         key: _formkey,
         child: SingleChildScrollView(
@@ -303,7 +326,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-      ),
+      ),),
     );
   }
 }
