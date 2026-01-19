@@ -121,30 +121,6 @@ class _SignupPageState extends State<SignupPage> {
         phoneNumber: newPhonenumber.text.trim(),
         password: newPassword.text.trim(),
       );
-
-      // if (newUser == "Failed to create user" ||
-      //     newUser == "User already exists") {
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     SnackBar(
-      //       backgroundColor: Colors.redAccent,
-      //       content: Text(
-      //         "User Already exesists",
-      //         style: TextStyle(fontSize: 20),
-      //       ),
-      //     ),
-      //   );
-      // } else {
-      //   print(newUser.fullName);
-      //   print(newUser.userName);
-      //   print(newUser.email);
-      //   print(newUser.phoneNumber);
-      //   print(newUser.password);
-
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => Home()),
-      //   );
-      // }
     }
   }
 
@@ -153,12 +129,22 @@ class _SignupPageState extends State<SignupPage> {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.loading) {
-          // optional: show loader
+
           Center(child: CircularProgressIndicator());
+          // CircularProgressIndicator();
         }
 
         if (state.status == AuthStatus.authenticated) {
-          Navigator.pushReplacement(
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.greenAccent,
+              content: Text(
+                'SignUp Successfully',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          );
+          Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const Home()),
           );

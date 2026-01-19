@@ -9,6 +9,7 @@ class AuthRepo extends BaseRepositories {
 
   Stream<User?> get authStateChanges => auth.authStateChanges();
 
+  // SignUp Method
   signUp({
     required String fullName,
     required String userName,
@@ -17,6 +18,27 @@ class AuthRepo extends BaseRepositories {
     required String phoneNumber,
   }) async {
     try {
+      final formatePhoneNumber = phoneNumber.replaceAll(
+        RegExp(r'\s+'),
+        "".trim(),
+      );
+
+      final emailExists = await checkEmailExists(email);
+      if (emailExists) {
+        throw "An account with same email exists";
+      }
+
+      final phoneNumberExists = await checkingPhonenumberExists(phoneNumber);
+      if (phoneNumberExists) {
+        throw "An account with same phone number exists";
+      }
+
+
+      final userNameExists = await checkingUsernameExists(userName);
+      if (userNameExists) {
+        throw "An account with same username exists";
+      }
+
       // this creates the user based on the email and password
       final createUser = await auth.createUserWithEmailAndPassword(
         email: email,
@@ -33,7 +55,7 @@ class AuthRepo extends BaseRepositories {
         fullName: fullName,
         email: email,
         password: password,
-        phoneNumber: phoneNumber,
+        phoneNumber: formatePhoneNumber,
       );
 
       try {
@@ -47,6 +69,8 @@ class AuthRepo extends BaseRepositories {
     }
     return user; // and we return the usermodel from this function
   }
+
+  // SignIn Method
 
   signIn({required String email, required String password}) async {
     try {
@@ -75,14 +99,60 @@ class AuthRepo extends BaseRepositories {
 
       log("User document fetched: ${doc.id}");
       return UserModel.fromFirestore(doc);
-    } catch (e, stackTrace) {
+    } catch (e) {
       log("Firestore error: $e");
-      log("Stacktrace: $stackTrace");
       rethrow;
     }
   }
 
+  // SignOut Method
   Future<void> signOut() async {
     await auth.signOut();
+  }
+
+  Future<bool> checkEmailExists(String email) async {
+    try {
+      final query = await firestore
+          .collection("users")
+          .where("email", isEqualTo: email.trim())
+          .get();
+
+      return query.docs.isNotEmpty; // true
+    } catch (e) {
+      print("Error checking email: $e");
+      return false;
+    }
+  }
+
+  Future<bool> checkingPhonenumberExists(String phoneNumber) async {
+    try {
+      final formatePhoneNumber = phoneNumber.replaceAll(
+        RegExp(r'\s+'),
+        "".trim(),
+      );
+      final quarySnapShort = await firestore
+          .collection("users")
+          .where("phoneNumber", isEqualTo: formatePhoneNumber)
+          .get();
+      return quarySnapShort.docs.isNotEmpty; // true
+    } catch (e) {
+      print('Error while checking email : $e');
+      return false;
+    }
+  }
+
+  Future<bool> checkingUsernameExists(String userName) async {
+    try {
+      final formateUsername = userName.trim();
+
+      final quarySnapShort = await firestore
+          .collection("users")
+          .where("userName", isEqualTo: formateUsername)
+          .get();
+      return quarySnapShort.docs.isNotEmpty; // true
+    } catch (e) {
+      print('Error while checking UserName : $e');
+      return false;
+    }
   }
 }
