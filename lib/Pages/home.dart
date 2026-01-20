@@ -13,11 +13,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  // Future<void> handleSignOut() async {
-  //   context.read<AuthCubit>().signOut();
-  //   setState(() {});
-  // }
 
+
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,22 +95,11 @@ class _HomeState extends State<Home> {
                           ],
                         ),
                       ),
+
+                      // Display all the chats
                     ],
                   ),
 
-                  // child: Column(
-                  //   children: [
-                  //     Container(
-                  //       margin: EdgeInsets.only(top: 25, right: 15, left: 15),
-                  //       child: GestureDetector(
-                  //         onTap: () {
-                  //           Navigator.push(
-                  //             context,
-                  //             MaterialPageRoute(
-                  //               builder: (context) => ChatPage(),
-                  //             ),
-                  //           );
-                  //         },
                   //         child: Row(
                   //           // person 1
                   //           children: [
@@ -231,8 +218,11 @@ class _HomeState extends State<Home> {
         ),
       ),
 
+      // Display all the contacts
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          // on Click Function
+        },
         elevation: 5,
         backgroundColor: Theme.of(context).colorScheme.primary,
         child: Icon(Icons.message_rounded, color: Colors.white, size: 30),

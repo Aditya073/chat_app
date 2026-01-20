@@ -1,7 +1,6 @@
 import 'package:chat_app/Pages/home.dart';
 import 'package:chat_app/core/common/custom_text_field.dart';
 import 'package:chat_app/core/utils/ui_utils.dart';
-import 'package:chat_app/data/repositories/auth_repo.dart';
 import 'package:chat_app/logic/cubits/auth_cubit.dart';
 import 'package:chat_app/logic/cubits/auth_state.dart';
 import 'package:chat_app/presentation/screens/auth/signUp_screen.dart';
@@ -68,6 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     return null;
   }
+
       /*
 
       SignIn Button
@@ -83,7 +83,6 @@ class _LoginScreenState extends State<LoginScreen> {
       BlocListener navigates to Home
 
       */
-
 
   @override
   Widget build(BuildContext context) {
