@@ -68,6 +68,22 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     return null;
   }
+      /*
+
+      SignIn Button
+           ↓
+      AuthCubit.SignIn()
+           ↓
+      AuthRepo.SignIn()
+           ↓
+      Firebase
+           ↓
+      Cubit emits Authenticated
+           ↓
+      BlocListener navigates to Home
+
+      */
+
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,4 @@
+import 'package:chat_app/Pages/home.dart';
 import 'package:chat_app/config/theme/app_theme.dart';
 import 'package:chat_app/data/repositories/auth_repo.dart';
 import 'package:chat_app/logic/cubits/auth_cubit.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
         title: 'Chat App',
         theme: AppTheme.lightTheme,
         debugShowCheckedModeBanner: false,
-        home: LoginScreen(),
+        home: Home(),
       ),
     );
   }
