@@ -1,5 +1,6 @@
 import 'package:chat_app/Pages/home.dart';
 import 'package:chat_app/core/common/custom_text_field.dart';
+import 'package:chat_app/core/utils/ui_utils.dart';
 import 'package:chat_app/data/repositories/auth_repo.dart';
 import 'package:chat_app/logic/cubits/auth_cubit.dart';
 import 'package:chat_app/logic/cubits/auth_state.dart';
@@ -126,294 +127,287 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthCubit, AuthState>(
+    return BlocConsumer<AuthCubit, AuthState>(
+      // bloc: AuthCubit(authRepository: null),
       listener: (context, state) {
         if (state.status == AuthStatus.loading) {
-
           Center(child: CircularProgressIndicator());
-          // CircularProgressIndicator();
         }
 
         if (state.status == AuthStatus.authenticated) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.greenAccent,
-              content: Text(
-                'SignUp Successfully',
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
-          );
+          UiUtils.showSnackBarr(context, message: 'SignUp Successfully', isError: false);
+
           Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const Home()),
           );
         }
 
-        if (state.status == AuthStatus.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error ?? 'Something went wrong')),
-          );
+        if (state.status == AuthStatus.error && state.error != null) {
+          UiUtils.showSnackBarr(context, message: state.error!, isError: true);
         }
       },
-      child: Scaffold(
-        body: Form(
-          key: _formkey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Stack(
-                  // to overlap the containers
-                  children: [
-                    Container(
-                      // Design of the container
-                      height: MediaQuery.of(context).size.height / 3.5,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Colors.deepPurple.shade700,
-                            Colors.deepPurple.shade500,
-                            Colors.blueAccent.shade400,
-                            Colors.blueAccent.shade200,
-                          ],
+      builder: (context, state) {
+        return Scaffold(
+          body: Form(
+            key: _formkey,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Stack(
+                    // to overlap the containers
+                    children: [
+                      Container(
+                        // Design of the container
+                        height: MediaQuery.of(context).size.height / 3.5,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.deepPurple.shade700,
+                              Colors.deepPurple.shade500,
+                              Colors.blueAccent.shade400,
+                              Colors.blueAccent.shade200,
+                            ],
+                          ),
+                          borderRadius: BorderRadius.vertical(
+                            bottom: Radius.elliptical(
+                              MediaQuery.of(context).size.width,
+                              120,
+                            ),
+                          ),
                         ),
-                        borderRadius: BorderRadius.vertical(
-                          bottom: Radius.elliptical(
-                            MediaQuery.of(context).size.width,
-                            120,
+
+                        // main content of the container
+                        child: SafeArea(
+                          child: Column(
+                            children: [
+                              Text(
+                                'Sign Up',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontSize: 26,
+                                ),
+                              ),
+                              Text(
+                                'Login to your account',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
 
-                      // main content of the container
-                      child: SafeArea(
+                      Container(
+                        // Design of the container
+                        margin: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height / 5.0,
+                          left: 20,
+                          right: 20,
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 20,
+                        ),
+
+                        // height: MediaQuery.of(context).size.height / 2.0,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 239, 238, 238),
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+
+                        // main content of the container
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Sign Up',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                fontSize: 26,
+                            Container(
+                              // text  (Full Name)
+                              margin: EdgeInsets.only(
+                                top: 10,
+                                left: 15,
+                                bottom: 15,
                               ),
+                              child: TextWidget(text: 'Full name'),
                             ),
-                            Text(
-                              'Login to your account',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
+                            CustomTextField(
+                              controller: newName,
+                              focusNode: _nameFocus,
+                              validator: _validateName,
+                              hintText: '',
+                              prefixIcon: Icon(Icons.person_2_outlined),
+                            ),
+
+                            Container(
+                              // text  (Username)
+                              margin: EdgeInsets.only(
+                                top: 20,
+                                left: 15,
+                                bottom: 15,
                               ),
+                              child: TextWidget(text: 'Username'),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    Container(
-                      // Design of the container
-                      margin: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height / 5.0,
-                        left: 20,
-                        right: 20,
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 20,
-                      ),
-
-                      // height: MediaQuery.of(context).size.height / 2.0,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 239, 238, 238),
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-
-                      // main content of the container
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            // text  (Full Name)
-                            margin: EdgeInsets.only(
-                              top: 10,
-                              left: 15,
-                              bottom: 15,
+                            CustomTextField(
+                              controller: newUsername,
+                              hintText: '',
+                              focusNode: _usernameFocus,
+                              validator: _validateUsername,
+                              prefixIcon: Icon(Icons.alternate_email),
                             ),
-                            child: TextWidget(text: 'Full name'),
-                          ),
-                          CustomTextField(
-                            controller: newName,
-                            focusNode: _nameFocus,
-                            validator: _validateName,
-                            hintText: '',
-                            prefixIcon: Icon(Icons.person_2_outlined),
-                          ),
 
-                          Container(
-                            // text  (Username)
-                            margin: EdgeInsets.only(
-                              top: 20,
-                              left: 15,
-                              bottom: 15,
+                            Container(
+                              // text  (Email)
+                              margin: EdgeInsets.only(
+                                top: 20,
+                                left: 15,
+                                bottom: 15,
+                              ),
+                              child: TextWidget(text: 'Email'),
                             ),
-                            child: TextWidget(text: 'Username'),
-                          ),
-                          CustomTextField(
-                            controller: newUsername,
-                            hintText: '',
-                            focusNode: _usernameFocus,
-                            validator: _validateUsername,
-                            prefixIcon: Icon(Icons.alternate_email),
-                          ),
-
-                          Container(
-                            // text  (Email)
-                            margin: EdgeInsets.only(
-                              top: 20,
-                              left: 15,
-                              bottom: 15,
+                            CustomTextField(
+                              controller: newEmailID,
+                              hintText: '',
+                              focusNode: _emailFocus,
+                              validator: _validateEmail,
+                              prefixIcon: Icon(Icons.mail_outline_outlined),
                             ),
-                            child: TextWidget(text: 'Email'),
-                          ),
-                          CustomTextField(
-                            controller: newEmailID,
-                            hintText: '',
-                            focusNode: _emailFocus,
-                            validator: _validateEmail,
-                            prefixIcon: Icon(Icons.mail_outline_outlined),
-                          ),
 
-                          Container(
-                            // text  (Phone number)
-                            margin: EdgeInsets.only(
-                              top: 20,
-                              left: 15,
-                              bottom: 15,
+                            Container(
+                              // text  (Phone number)
+                              margin: EdgeInsets.only(
+                                top: 20,
+                                left: 15,
+                                bottom: 15,
+                              ),
+                              child: TextWidget(text: 'Phone number'),
                             ),
-                            child: TextWidget(text: 'Phone number'),
-                          ),
-                          CustomTextField(
-                            controller: newPhonenumber,
-                            hintText: '',
-                            keyboardType: TextInputType.numberWithOptions(),
-                            focusNode: _phoneFocus,
-                            validator: _validatePhone,
-                            prefixIcon: Icon(Icons.phone),
-                          ),
-
-                          Container(
-                            // text  (Password)
-                            margin: EdgeInsets.only(
-                              top: 20,
-                              left: 15,
-                              bottom: 15,
+                            CustomTextField(
+                              controller: newPhonenumber,
+                              hintText: '',
+                              keyboardType: TextInputType.numberWithOptions(),
+                              focusNode: _phoneFocus,
+                              validator: _validatePhone,
+                              prefixIcon: Icon(Icons.phone),
                             ),
-                            child: TextWidget(text: 'Password'),
-                          ),
 
-                          CustomTextField(
-                            controller: newPassword,
-                            hintText: '',
-                            focusNode: _passwordFocus,
-                            validator: _validatePassword,
-                            prefixIcon: Icon(Icons.lock_outline_rounded),
-                            obscureText: _isPasswordVisibal,
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _isPasswordVisibal = !_isPasswordVisibal;
-                                });
-                              },
-                              icon: _isPasswordVisibal
-                                  ? Icon(Icons.visibility_off)
-                                  : Icon(Icons.visibility),
+                            Container(
+                              // text  (Password)
+                              margin: EdgeInsets.only(
+                                top: 20,
+                                left: 15,
+                                bottom: 15,
+                              ),
+                              child: TextWidget(text: 'Password'),
                             ),
-                          ),
 
-                          SizedBox(height: 20),
-                          Center(
-                            child: Material(
-                              elevation: 5,
-                              borderRadius: BorderRadius.circular(10),
-
-                              child: GestureDetector(
-                                onTap: () {
-                                  // calling the Signup function
-                                  handleSignUp();
-                                  // CircularProgressIndicator();
+                            CustomTextField(
+                              controller: newPassword,
+                              hintText: '',
+                              focusNode: _passwordFocus,
+                              validator: _validatePassword,
+                              prefixIcon: Icon(Icons.lock_outline_rounded),
+                              obscureText: _isPasswordVisibal,
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _isPasswordVisibal = !_isPasswordVisibal;
+                                  });
                                 },
-                                child: Container(
-                                  padding: EdgeInsets.only(
-                                    top: 10,
-                                    bottom: 10,
-                                    left: 30,
-                                    right: 30,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xff6380fb),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Text(
-                                    'Sign Up',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                icon: _isPasswordVisibal
+                                    ? Icon(Icons.visibility_off)
+                                    : Icon(Icons.visibility),
+                              ),
+                            ),
+
+                            SizedBox(height: 20),
+                            Center(
+                              child: Material(
+                                elevation: 5,
+                                borderRadius: BorderRadius.circular(10),
+
+                                child: GestureDetector(
+                                  onTap: () {
+                                    // calling the Signup function
+                                    handleSignUp();
+                                    // CircularProgressIndicator();
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                      top: 10,
+                                      bottom: 10,
+                                      left: 30,
+                                      right: 30,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xff6380fb),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Text(
+                                      'Sign Up',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-
-                RichText(
-                  text: TextSpan(
-                    text: 'Already have an account? ',
-                    style: TextStyle(
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: ' Sign In Now!',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.w500,
+                          ],
                         ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LoginScreen(),
-                              ),
-                            );
-                          },
                       ),
                     ],
                   ),
-                ),
-              ],
+                  SizedBox(height: 10),
+
+                  RichText(
+                    text: TextSpan(
+                      text: 'Already have an account? ',
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: ' Sign In Now!',
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.w500,
+                              ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoginScreen(),
+                                ),
+                              );
+                            },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
