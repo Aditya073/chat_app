@@ -71,6 +71,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(state.copyWith(status: AuthStatus.authenticated, user: user));
     } catch (e) {
       emit(state.copyWith(status: AuthStatus.error, error: e.toString()));
+      throw e.toString();
     }
   }
 
@@ -78,7 +79,6 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       await _authRepository.signOut();
       emit(state.copyWith(status: AuthStatus.unauthenticated, user: null));
- 
     } catch (e) {
       emit(state.copyWith(status: AuthStatus.error, error: e.toString()));
     }
