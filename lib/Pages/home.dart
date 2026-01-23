@@ -1,9 +1,11 @@
 import 'package:chat_app/Pages/chat_page.dart';
 import 'package:chat_app/config/theme/app_theme.dart';
+import 'package:chat_app/data/repositories/contact_repo.dart';
 import 'package:chat_app/logic/cubits/auth_cubit.dart';
 import 'package:chat_app/presentation/screens/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_contacts/contact.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -13,9 +15,73 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  late final ContactRepo _contactRepo;
+  @override
+  void initState() {
+    _contactRepo = ContactRepo();
+    super.initState();
+  }
 
+  void _showContactList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          child: Column(
+            children: [
+              FutureBuilder<List<Map<String, dynamic>>>(
+                future: _contactRepo.getRegristeredContacts(),
+                builder: (context, snapshort) {
+                  if (snapshort.hasError) {
+                    return Center(
+                      child: Text(
+                        'Error : ${snapshort.error}',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    );
+                  }
+                  if (!snapshort.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  final Contact = snapshort.data!;
 
-  
+                  if (Contact.isEmpty) {
+                    return Center(
+                      child: Text(
+                        "No Contacts found",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    itemCount: Contact.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final contacts = Contact[index];
+                      return ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Theme.of(
+                            context,
+                          ).primaryColor.withOpacity(0.1),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -221,7 +287,8 @@ class _HomeState extends State<Home> {
       // Display all the contacts
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // on Click Function
+          // on Click should display all the contacts
+          _showContactList(context);
         },
         elevation: 5,
         backgroundColor: Theme.of(context).colorScheme.primary,

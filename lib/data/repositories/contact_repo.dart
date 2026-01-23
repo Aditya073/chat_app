@@ -18,6 +18,7 @@ class ContactRepo extends BaseRepositories {
         withProperties: true,
         withPhoto: true,
       );
+      print('-------------------------------------------- contacts ');
       print(contacts);
 
       // extract PhoneNumber and normalize them
@@ -34,15 +35,21 @@ class ContactRepo extends BaseRepositories {
             },
           )
           .toList();
+                print('--------------------------------------------phoneNumbers');
+
       print(phoneNumbers);
 
       // get all users from firebase
       final userSnapShot = await firestore.collection('users').get();
+           print('--------------------------------------------userSnapShot');
       print(userSnapShot);
 
       final registeredUsers = userSnapShot.docs
           .map((doc) => UserModel.fromFirestore(doc))
           .toList();
+      print('-------------------------------------------- registeredUsers');
+
+      print(registeredUsers);
 
       // Match contact with registered User
 
@@ -66,6 +73,7 @@ class ContactRepo extends BaseRepositories {
             };
           })
           .toList();
+      print('-------------------------------------------- matchContacts ');
 
       print(matchContacts);
       return matchContacts;
