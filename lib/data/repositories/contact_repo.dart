@@ -15,7 +15,7 @@ class ContactRepo extends BaseRepositories {
   String normalizePhone(String phone) {
     return phone
         .replaceAll(RegExp(r'[^\d]'), '') // remove +, spaces, -
-        .replaceFirst(RegExp(r'^91'), ''); // optional: remove country code
+        .replaceFirst(RegExp(r'^1'), ''); // optional: remove country code : 1
   }
 
   Future<List<Map<String, dynamic>>> getRegristeredContacts() async {
@@ -64,9 +64,10 @@ class ContactRepo extends BaseRepositories {
           .toList();
       print('-------------------------------------------- registeredUsers');
 
-for (var user in registeredUsers) {  // list all the phoneNumbers
-  print('Firestore user phone: ${user.phoneNumber}');
-}
+      for (var user in registeredUsers) {
+        // list all the phoneNumbers
+        print('Firestore user phone: ${user.phoneNumber}');
+      }
 
       // Match contact with registered User
       // So for contact to display the phone number from 'contacts' should match the phone number from 'firestore database'

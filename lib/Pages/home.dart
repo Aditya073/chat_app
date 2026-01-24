@@ -86,6 +86,12 @@ class _HomeState extends State<Home> {
                           ),
                 
                           title: Text(contacts["name"]),
+
+                          onTap: () {
+                            // Should open the chat screen
+
+                            
+                          },
                         );
                       },
                     );
