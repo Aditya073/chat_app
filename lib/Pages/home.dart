@@ -29,51 +29,68 @@ class _HomeState extends State<Home> {
         return Container(
           child: Column(
             children: [
-              FutureBuilder<List<Map<String, dynamic>>>(
-                future: _contactRepo.getRegristeredContacts(),
-                builder: (context, snapshort) {
-                  if (snapshort.hasError) {
-                    return Center(
-                      child: Text(
-                        'Error : ${snapshort.error}',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    );
-                  }
-                  if (!snapshort.hasData) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  final Contact = snapshort.data!;
-
-                  if (Contact.isEmpty) {
-                    return Center(
-                      child: Text(
-                        "No Contacts found",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    );
-                  }
-
-                  return ListView.builder(
-                    itemCount: Contact.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final contacts = Contact[index];
-                      return ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Theme.of(
-                            context,
-                          ).primaryColor.withOpacity(0.1),
+              Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: Text(
+                  'Contacts',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Expanded(
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: _contactRepo.getRegristeredContacts(),
+                  builder: (context, snapshort) {
+                    if (snapshort.hasError) {
+                      return Center(
+                        child: Text(
+                          'Error : ${snapshort.error}',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       );
-                    },
-                  );
-                },
+                    }
+                    if (!snapshort.hasData) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    final Contact = snapshort.data!;
+                
+                    if (Contact.isEmpty) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Center(
+                          child: Text(
+                            "No Contacts found",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                
+                    return ListView.builder(
+                      itemCount: Contact.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final contacts = Contact[index];
+                        return ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: Theme.of(
+                              context,
+                            ).primaryColor.withOpacity(0.1),
+                
+                            child: Text(contacts["name"][0]),
+                          ),
+                
+                          title: Text(contacts["name"]),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             ],
           ),

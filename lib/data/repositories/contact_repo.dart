@@ -7,18 +7,32 @@ class ContactRepo extends BaseRepositories {
   // to get the Uid of current user from firebase
   String get currentUserId => FirebaseAuth.instance.currentUser?.uid ?? '';
 
-  Future<bool> requireContactPermission() async {
-    return await FlutterContacts.requestPermission();
+  // Future<bool> requireContactPermission() async {
+  //   final granted = await FlutterContacts.requestPermission();
+  //   return granted;
+  // }
+
+  String normalizePhone(String phone) {
+    return phone
+        .replaceAll(RegExp(r'[^\d]'), '') // remove +, spaces, -
+        .replaceFirst(RegExp(r'^91'), ''); // optional: remove country code
   }
 
   Future<List<Map<String, dynamic>>> getRegristeredContacts() async {
     try {
+      final granted = await FlutterContacts.requestPermission();
+      if (!granted) {
+        print("Contacts permission denied");
+        return [];
+      }
       // get all the devices contact Phone Number
       final contacts = await FlutterContacts.getContacts(
         withProperties: true,
         withPhoto: true,
       );
-      print('-------------------------------------------- contacts ');
+      print(
+        '--------------------------------------------Fetching the contacts from the Users mobile',
+      );
       print(contacts);
 
       // extract PhoneNumber and normalize them
@@ -27,31 +41,35 @@ class ContactRepo extends BaseRepositories {
           .map(
             (contact) => {
               'name': contact.displayName,
-              'phoneNumber': contact.phones.first.number.replaceAll(
-                RegExp(r'[^\d+]'),
-                '',
-              ),
+              'phoneNumber': normalizePhone(
+                contact.phones.first.number,
+              ), // giving the number to the function to generalize it
               'photo': contact.photo, // Store contact photo if available
             },
           )
           .toList();
-                print('--------------------------------------------phoneNumbers');
+      print(
+        '--------------------------------------------phoneNumbers in normalizs form',
+      );
 
       print(phoneNumbers);
 
       // get all users from firebase
       final userSnapShot = await firestore.collection('users').get();
-           print('--------------------------------------------userSnapShot');
-      print(userSnapShot);
+      print('--------------------------------------------userSnapShot');
+      print(userSnapShot.docs.first);
 
       final registeredUsers = userSnapShot.docs
           .map((doc) => UserModel.fromFirestore(doc))
           .toList();
       print('-------------------------------------------- registeredUsers');
 
-      print(registeredUsers);
+for (var user in registeredUsers) {  // list all the phoneNumbers
+  print('Firestore user phone: ${user.phoneNumber}');
+}
 
       // Match contact with registered User
+      // So for contact to display the phone number from 'contacts' should match the phone number from 'firestore database'
 
       final matchContacts = phoneNumbers
           .where((contact) {
