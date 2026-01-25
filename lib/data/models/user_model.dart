@@ -29,6 +29,8 @@ class UserModel {
         createdAt = createdAt ?? Timestamp.now(),
         blockedUsers = blockedUsers ?? [];
 
+
+//It’s a named constructor whose job is to convert Firestore data into a UserModel object safely.
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
 
