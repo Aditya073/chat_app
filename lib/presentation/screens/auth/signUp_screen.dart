@@ -1,4 +1,4 @@
-import 'package:chat_app/Pages/home.dart';
+import 'package:chat_app/presentation/home/home.dart';
 import 'package:chat_app/core/common/custom_text_field.dart';
 import 'package:chat_app/core/utils/ui_utils.dart';
 import 'package:chat_app/data/repositories/auth_repo.dart';

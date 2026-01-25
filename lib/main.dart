@@ -1,4 +1,4 @@
-import 'package:chat_app/Pages/home.dart';
+import 'package:chat_app/presentation/home/home.dart';
 import 'package:chat_app/config/theme/app_theme.dart';
 import 'package:chat_app/data/repositories/auth_repo.dart';
 import 'package:chat_app/logic/cubits/auth_cubit.dart';
@@ -14,7 +14,7 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget { //4:38
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
