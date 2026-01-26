@@ -16,6 +16,8 @@ class ChatMessageScreen extends StatefulWidget {
 }
 
 class _ChatMessageScreenState extends State<ChatMessageScreen> {
+  final TextEditingController message = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,6 +68,54 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                 );
               },
             ),
+          ),
+          Column(
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.emoji_emotions,
+                      color: Theme.of(context).primaryColor.withOpacity(0.5),
+                    ),
+                  ),
+                  Expanded(
+                    child: TextField(
+                      textCapitalization: TextCapitalization.sentences,
+                      controller: message,
+                      keyboardType: TextInputType.multiline,
+                      decoration: InputDecoration(
+                        fillColor: Theme.of(context).canvasColor,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        filled: true,
+                        hint: Text(
+                          'Type a message',
+                          style: TextStyle(color: Colors.grey, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      print(message.text);
+                    },
+                    icon: Icon(
+                      Icons.send,
+                      color: Theme.of(context).primaryColor.withOpacity(0.5),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ],
       ),
