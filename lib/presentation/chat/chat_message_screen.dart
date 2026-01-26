@@ -1,9 +1,15 @@
+import 'package:chat_app/data/models/chat_message.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ChatMessageScreen extends StatefulWidget {
-  final String senderId;
   final String receiverId;
-  const ChatMessageScreen({super.key, required this.senderId, required this.receiverId});
+  final String receiverName;
+  const ChatMessageScreen({
+    super.key,
+    required this.receiverId,
+    required this.receiverName,
+  });
 
   @override
   State<ChatMessageScreen> createState() => _ChatMessageScreenState();
@@ -14,7 +20,137 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        //5:17:12
+        title: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+              child: Text(widget.receiverName[0]),
+            ),
+            SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.receiverName,
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                ),
+                Text(
+                  'last seen at (time)',
+                  style: TextStyle(fontSize: 12, color: Colors.black54),
+                ),
+              ],
+            ),
+          ],
+        ),
+        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.more_vert))],
+      ),
+
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: 5,
+              itemBuilder: (BuildContext context, int index) {
+                return MessageBubble(
+                  isMe: true,
+                  message: ChatMessage(
+                    id: "id",
+                    chatRoomId: "chatRoomId",
+                    senderId: "senderId",
+                    receiverId: "receiverId",
+                    content: "Hello World",
+                    status: MessageStatus.read,
+                    timestamp: Timestamp.now(),
+                    readBy: [],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MessageBubble extends StatelessWidget {
+  final ChatMessage message;
+  final bool isMe;
+  const MessageBubble({super.key, required this.isMe, required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: isMe
+          ? AlignmentGeometry.centerRight
+          : AlignmentGeometry.centerLeft,
+      child: Container(
+        decoration: BoxDecoration(
+          color: isMe
+              ? Theme.of(context).primaryColor
+              : Theme.of(context).primaryColor.withOpacity(0.1),
+
+          borderRadius: isMe
+              ? BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.zero,
+                )
+              : BorderRadius.only(
+                  topLeft: Radius.zero,
+                  topRight: Radius.circular(20),
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        margin: EdgeInsets.only(
+          left: isMe ? 64 : 8,
+          right: isMe ? 8 : 64,
+          bottom: 4,
+        ),
+
+        child: Column(
+          crossAxisAlignment: isMe
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
+          children: [
+            Text(
+              message.content,
+              style: TextStyle(
+                color: isMe ? Colors.white : Colors.black,
+                fontSize: 16,
+              ),
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+
+              children: [
+                Text(
+                  'Time',
+                  style: TextStyle(
+                    color: isMe ? Colors.white : Colors.black,
+                    fontSize: 12,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4, right: 4),
+                  child: Icon(
+                    message.status == MessageStatus.read
+                        ? Icons.done_all
+                        : Icons.done,
+                    // Icons.done_all,
+                    size: 18,
+                    color: message.status == MessageStatus.read
+                        ? Colors.blueAccent
+                        : Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:chat_app/Pages/chat_page.dart';
 import 'package:chat_app/config/theme/app_theme.dart';
 import 'package:chat_app/data/repositories/contact_repo.dart';
 import 'package:chat_app/logic/cubits/auth_cubit.dart';
+import 'package:chat_app/presentation/chat/chat_message_screen.dart';
 import 'package:chat_app/presentation/screens/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -55,7 +56,7 @@ class _HomeState extends State<Home> {
                       return Center(child: CircularProgressIndicator());
                     }
                     final Contact = snapshort.data!;
-                
+
                     if (Contact.isEmpty) {
                       return Padding(
                         padding: const EdgeInsets.only(top: 8),
@@ -71,26 +72,35 @@ class _HomeState extends State<Home> {
                         ),
                       );
                     }
-                
+
                     return ListView.builder(
                       itemCount: Contact.length,
                       itemBuilder: (BuildContext context, int index) {
                         final contacts = Contact[index];
+                        // print(contacts.toString());
                         return ListTile(
                           leading: CircleAvatar(
                             backgroundColor: Theme.of(
                               context,
                             ).primaryColor.withOpacity(0.1),
-                
+
                             child: Text(contacts["name"][0]),
                           ),
-                
+
                           title: Text(contacts["name"]),
 
                           onTap: () {
                             // Should open the chat screen
 
-                            
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChatMessageScreen(
+                                  receiverId: contacts['id'],
+                                  receiverName: contacts['name'],
+                                ),
+                              ),
+                            );
                           },
                         );
                       },
