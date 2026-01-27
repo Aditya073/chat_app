@@ -1,9 +1,15 @@
+import 'package:chat_app/data/models/chat_message.dart';
 import 'package:chat_app/data/models/chat_room_model.dart';
 import 'package:chat_app/data/services/base_repositories.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatRepo extends BaseRepositories {
   CollectionReference get _chatRooms => firestore.collection("chatRooms");
+
+  // this will give u access to the messages of a chatroom
+  CollectionReference getchatRoomMessage(String chatRoomId) {
+    return _chatRooms.doc(chatRoomId).collection('messages');
+  }
 
   Future<ChatRoomModel> getOrCreateChatRoom(
     String currentUserId,
@@ -33,6 +39,7 @@ class ChatRepo extends BaseRepositories {
       otherUserId: otherUserData['Fullname']?.toString() ?? "",
     };
 
+    // if room dosen`t exsists then create it
     final newRoom = ChatRoomModel(
       id: roomId,
       participants: users,
@@ -46,5 +53,40 @@ class ChatRepo extends BaseRepositories {
     await _chatRooms.doc(roomId).set(newRoom.toMap());
 
     return newRoom;
+  }
+
+  // send message
+  Future<void> sendMessage({
+    required String chatRoomId,
+    required String senderId,
+    required String receiverId,
+    required String content,
+    MessageType type = MessageType.text,
+  }) async {
+    final batch = firestore.batch();
+
+    final messageRef = getchatRoomMessage(chatRoomId);
+    final messageDoc = messageRef.doc();
+    print(messageDoc.get());
+
+    final message = ChatMessage(
+      id: messageDoc.id,
+      chatRoomId: chatRoomId,
+      senderId: senderId,
+      receiverId: receiverId,
+      content: content,
+      timestamp: Timestamp.now(),
+      readBy: [senderId],
+    );
+
+    batch.set(messageDoc, message.toMap());
+
+    batch.update(_chatRooms.doc(chatRoomId), {
+      "lastMessage": content,
+      "lastMessageSenderId": senderId,
+      "lastMessageTime": message.timestamp,
+    });
+
+    await batch.commit();
   }
 }

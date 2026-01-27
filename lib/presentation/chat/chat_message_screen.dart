@@ -1,4 +1,5 @@
 import 'package:chat_app/data/models/chat_message.dart';
+import 'package:chat_app/data/repositories/chat_repo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -107,6 +108,12 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                   IconButton(
                     onPressed: () {
                       print(message.text);
+                      // ChatRepo().sendMessage(
+                      //   chatRoomId: chatRoomId,
+                      //   senderId: senderId,
+                      //   receiverId: receiverId,
+                      //   content: message.text.trim(),
+                      // );
                     },
                     icon: Icon(
                       Icons.send,
