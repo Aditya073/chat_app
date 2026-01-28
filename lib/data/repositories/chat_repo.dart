@@ -23,7 +23,12 @@ class ChatRepo extends BaseRepositories {
 
     if (roomDoc.exists) {
       // give the SnapShot to the "ChatRoomModel"
+      print("__________________________The room is created");
       return ChatRoomModel.fromFirestore(roomDoc);
+    }
+
+    if (!roomDoc.exists) {
+      print("__________________________The room is not created");
     }
 
     final currentUserData = // this will get the data of the particular user from "firestore.collection('users')"
@@ -88,5 +93,7 @@ class ChatRepo extends BaseRepositories {
     });
 
     await batch.commit();
+    print("____________________ Users message content");
+    print(content);
   }
 }

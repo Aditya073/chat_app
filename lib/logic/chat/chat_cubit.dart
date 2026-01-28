@@ -46,13 +46,14 @@ class ChatCubit extends Cubit<ChatState> {
       return;
     }
     try {
+      print("___________________________________________state.chatRoomId");
+      print(state.chatRoomId);
       await _chatRepository.sendMessage(
         chatRoomId: state.chatRoomId!,
         senderId: currentUserId,
         receiverId: receiverId,
         content: content,
       );
-
     } catch (e) {
       emit(state.copyWith(error: "Failed to send the message $e"));
     }

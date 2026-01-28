@@ -1,7 +1,11 @@
 import 'package:chat_app/data/models/chat_message.dart';
 import 'package:chat_app/data/repositories/chat_repo.dart';
+import 'package:chat_app/logic/chat/chat_cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:chat_app/data/repositories/chat_repo.dart';
 
 class ChatMessageScreen extends StatefulWidget {
   final String receiverId;
@@ -18,6 +22,39 @@ class ChatMessageScreen extends StatefulWidget {
 
 class _ChatMessageScreenState extends State<ChatMessageScreen> {
   final TextEditingController message = TextEditingController();
+
+  late final ChatCubit _chatCubit;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    _chatCubit = ChatCubit(chatRepository: ChatRepo(), currentUserId: user.uid);
+    _chatCubit.enterChat(widget.receiverId);
+    super.initState();
+  }
+
+  Future<void> handleSendingMessage() async {
+    final contentMessage = message.text.trim();
+    message.clear();
+
+    if (!contentMessage.isEmpty) {
+      await _chatCubit.sendMessage(
+        content: contentMessage,
+        receiverId: widget.receiverId,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    message.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +144,7 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                   ),
                   IconButton(
                     onPressed: () {
-                      print(message.text);
+                      handleSendingMessage();
                       // ChatRepo().sendMessage(
                       //   chatRoomId: chatRoomId,
                       //   senderId: senderId,
