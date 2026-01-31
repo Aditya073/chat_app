@@ -3,9 +3,7 @@ import 'package:chat_app/data/repositories/chat_repo.dart';
 import 'package:chat_app/logic/chat/chat_cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:chat_app/data/repositories/chat_repo.dart';
 
 class ChatMessageScreen extends StatefulWidget {
   final String receiverId;
@@ -27,14 +25,18 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
 
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
+    if (user == null) {
+      // handle error
+      return;
+    }
+
+    print('__________________ here in initState');
 
     _chatCubit = ChatCubit(chatRepository: ChatRepo(), currentUserId: user.uid);
     _chatCubit.enterChat(widget.receiverId);
-    super.initState();
   }
 
   Future<void> handleSendingMessage() async {
@@ -47,13 +49,6 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
         receiverId: widget.receiverId,
       );
     }
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    message.dispose();
-    super.dispose();
   }
 
   @override

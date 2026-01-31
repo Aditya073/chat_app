@@ -16,10 +16,12 @@ class ChatCubit extends Cubit<ChatState> {
     emit(state.copyWith(status: ChatStatus.loding));
 
     try {
+      print("_______________________ here in chatCubit to create a chatRoom");
       final chatRoom = await _chatRepository.getOrCreateChatRoom(
         currentUserId,
         receiverId,
       );
+      print("_______________________ the chatRoom was created");
 
       emit(
         state.copyWith(

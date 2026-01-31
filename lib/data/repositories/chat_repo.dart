@@ -4,13 +4,14 @@ import 'package:chat_app/data/services/base_repositories.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatRepo extends BaseRepositories {
-  CollectionReference get _chatRooms => firestore.collection("chatRooms");
+  CollectionReference get _chatRooms => firestore.collection('chatRooms');
 
   // this will give u access to the messages of a chatroom
   CollectionReference getchatRoomMessage(String chatRoomId) {
     return _chatRooms.doc(chatRoomId).collection('messages');
   }
 
+  // Enter a chatRoom or create one method
   Future<ChatRoomModel> getOrCreateChatRoom(
     String currentUserId,
     String otherUserId,
@@ -19,16 +20,16 @@ class ChatRepo extends BaseRepositories {
       ..sort(); // this will give the same documentname for both the users
     final roomId = users.join('_');
 
-    final roomDoc = await _chatRooms.doc(roomId).get();
+    final roomDoc = await firestore.collection('chatRooms').doc(roomId).get();
 
     if (roomDoc.exists) {
       // give the SnapShot to the "ChatRoomModel"
-      print("__________________________The room is created");
+      print("__________________________The chatRoom already exists");
       return ChatRoomModel.fromFirestore(roomDoc);
     }
 
     if (!roomDoc.exists) {
-      print("__________________________The room is not created");
+      print("__________________________The chatRoom does not exists");
     }
 
     final currentUserData = // this will get the data of the particular user from "firestore.collection('users')"
@@ -55,12 +56,16 @@ class ChatRepo extends BaseRepositories {
       },
     );
 
-    await _chatRooms.doc(roomId).set(newRoom.toMap());
+    print(
+      "__________________________we are creating a chatRoom using (currentUserData) and (otherUserData)",
+    );
 
+    await firestore.collection('chatRooms').doc(roomId).set(newRoom.toMap());
+    print("_______________________the chatRoom is now created");
     return newRoom;
   }
 
-  // send message
+  // send message method
   Future<void> sendMessage({
     required String chatRoomId,
     required String senderId,
