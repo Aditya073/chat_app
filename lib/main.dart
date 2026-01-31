@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         title: 'Chat App',
         theme: AppTheme.lightTheme,
         debugShowCheckedModeBanner: false,
-        home: Home(),
+        home: LoginScreen(),
       ),
     );
   }

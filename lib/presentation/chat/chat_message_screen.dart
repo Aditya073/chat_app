@@ -26,14 +26,17 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
   @override
   void initState() {
     super.initState();
+    print('__________________ here in initState');
 
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       // handle error
+      print('_________________user is null');
       return;
     }
+      print(user);
 
-    print('__________________ here in initState');
+    print('__________________ user is not null');
 
     _chatCubit = ChatCubit(chatRepository: ChatRepo(), currentUserId: user.uid);
     _chatCubit.enterChat(widget.receiverId);
