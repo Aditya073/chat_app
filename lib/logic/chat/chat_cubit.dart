@@ -53,6 +53,13 @@ class ChatCubit extends Cubit<ChatState> {
           currentUserId,
           receiverId,
         );
+        emit(
+          state.copyWith(
+            chatRoomId: chatRoom.id,
+            receiverId: receiverId,
+            status: ChatStatus.loaded,
+          ),
+        );
       }
 
       print("____________________chatRoom.id");

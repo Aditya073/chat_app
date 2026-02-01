@@ -102,4 +102,38 @@ class ChatRepo extends BaseRepositories {
     print("____________________ Users message content");
     print(content);
   }
+
+  // get the above messages
+
+  Stream<List<ChatMessage>> getMessages(
+    String chatroomId, {
+    DocumentSnapshot? lastDocument,
+  }) {
+    var query = getchatRoomMessage(
+      chatroomId,
+    ).orderBy('timeStamp', descending: true).limit(20);
+
+    if (lastDocument != null) {
+      query = query.startAfterDocument(lastDocument);
+    }
+
+    return query.snapshots().map(
+      (snapshort) =>
+          snapshort.docs.map((doc) => ChatMessage.fromFirestore(doc)).toList(),
+    );
+  }
+
+  Future<List<ChatMessage>> getMoreMessages(
+    String chatroomId, {
+    required DocumentSnapshot lastDocument,
+  }) async {
+    final query = getchatRoomMessage(chatroomId)
+        .orderBy('timeStamp', descending: true)
+        .startAfterDocument(lastDocument)
+        .limit(20);
+
+    final snapshort = await query.get();
+
+    return snapshort.docs.map((doc) => ChatMessage.fromFirestore(doc)).toList();
+  }
 }
