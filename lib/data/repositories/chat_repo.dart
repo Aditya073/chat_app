@@ -85,6 +85,7 @@ class ChatRepo extends BaseRepositories {
       senderId: senderId,
       receiverId: receiverId,
       content: content,
+      type: type,
       timestamp: Timestamp.now(),
       readBy: [senderId],
     );

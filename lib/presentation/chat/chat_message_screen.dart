@@ -1,6 +1,7 @@
 import 'package:chat_app/data/models/chat_message.dart';
 import 'package:chat_app/data/repositories/chat_repo.dart';
 import 'package:chat_app/logic/chat/chat_cubit.dart';
+import 'package:chat_app/logic/chat/chat_state.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
       print('_________________user is null');
       return;
     }
-      print(user);
+    print(user);
 
     print('__________________ user is not null');
 
@@ -43,15 +44,17 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
   }
 
   Future<void> handleSendingMessage() async {
-    final contentMessage = message.text.trim();
-    message.clear();
 
-    if (!contentMessage.isEmpty) {
+      final contentMessage = message.text.trim();
+      message.clear();
+
+      print("_____________________contentMessage");
+      print(contentMessage);
+
       await _chatCubit.sendMessage(
         content: contentMessage,
         receiverId: widget.receiverId,
       );
-    }
   }
 
   @override
