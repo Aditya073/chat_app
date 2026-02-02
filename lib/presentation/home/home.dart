@@ -1,12 +1,9 @@
-import 'package:chat_app/Pages/chat_page.dart';
-import 'package:chat_app/config/theme/app_theme.dart';
 import 'package:chat_app/data/repositories/contact_repo.dart';
 import 'package:chat_app/logic/cubits/auth_cubit.dart';
 import 'package:chat_app/presentation/chat/chat_message_screen.dart';
 import 'package:chat_app/presentation/screens/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_contacts/contact.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -202,117 +199,6 @@ class _HomeState extends State<Home> {
                     ],
                   ),
 
-                  //         child: Row(
-                  //           // person 1
-                  //           children: [
-                  //             ClipRRect(
-                  //               borderRadius: BorderRadius.circular(20),
-                  //               child: Image.asset(
-                  //                 'images/Person_1.jpg',
-                  //                 height: 70,
-                  //                 width: 70,
-                  //                 fit: BoxFit.contain,
-                  //               ),
-                  //             ),
-
-                  //             Padding(
-                  //               padding: const EdgeInsets.only(left: 5),
-                  //               child: Column(
-                  //                 crossAxisAlignment: CrossAxisAlignment.start,
-                  //                 children: [
-                  //                   Text(
-                  //                     'Person 1',
-                  //                     style: TextStyle(
-                  //                       fontWeight: FontWeight.bold,
-                  //                       fontSize: 18,
-                  //                     ),
-                  //                   ),
-                  //                   Text(
-                  //                     'Hello, what are u doing?',
-                  //                     style: TextStyle(
-                  //                       fontWeight: FontWeight.bold,
-                  //                       fontSize: 14,
-                  //                       color: Colors.grey,
-                  //                     ),
-                  //                   ),
-                  //                 ],
-                  //               ),
-                  //             ),
-                  //             Spacer(),
-                  //             Text(
-                  //               '04:35 PM',
-                  //               style: TextStyle(
-                  //                 fontWeight: FontWeight.bold,
-                  //                 fontSize: 16,
-                  //                 color: Colors.grey,
-                  //               ),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     Container(
-                  //       margin: EdgeInsets.only(top: 30, right: 15, left: 15),
-                  //       child: GestureDetector(
-                  //         onTap: () {
-                  //           Navigator.push(
-                  //             context,
-                  //             MaterialPageRoute(
-                  //               builder: (context) => ChatPage(),
-                  //             ),
-                  //           );
-                  //         },
-                  //         child: Row(
-                  //           // person 2
-                  //           children: [
-                  //             ClipRRect(
-                  //               borderRadius: BorderRadius.circular(20),
-                  //               child: Image.asset(
-                  //                 'images/Person_2.jpg',
-                  //                 height: 70,
-                  //                 width: 70,
-                  //                 fit: BoxFit.contain,
-                  //               ),
-                  //             ),
-
-                  //             Padding(
-                  //               padding: const EdgeInsets.only(left: 5),
-                  //               child: Column(
-                  //                 crossAxisAlignment: CrossAxisAlignment.start,
-                  //                 children: [
-                  //                   Text(
-                  //                     'Person 2',
-                  //                     style: TextStyle(
-                  //                       fontWeight: FontWeight.bold,
-                  //                       fontSize: 18,
-                  //                     ),
-                  //                   ),
-                  //                   Text(
-                  //                     'Hey there!!!',
-                  //                     style: TextStyle(
-                  //                       fontWeight: FontWeight.bold,
-                  //                       fontSize: 14,
-                  //                       color: Colors.grey,
-                  //                     ),
-                  //                   ),
-                  //                 ],
-                  //               ),
-                  //             ),
-                  //             Spacer(),
-                  //             Text(
-                  //               '05:07 PM',
-                  //               style: TextStyle(
-                  //                 fontWeight: FontWeight.bold,
-                  //                 fontSize: 16,
-                  //                 color: Colors.grey,
-                  //               ),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
                 ),
               ),
             ],
@@ -323,7 +209,7 @@ class _HomeState extends State<Home> {
       // Display all the contacts
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // on Click should display all the contacts
+          // on Click should display all the contacts 
           print('__________________the (floatingActionButton) was clicked');
           _showContactList(context);
         },
