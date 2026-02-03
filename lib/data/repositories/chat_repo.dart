@@ -105,23 +105,42 @@ class ChatRepo extends BaseRepositories {
 
   // get the above messages
 
+  // Stream<List<ChatMessage>> getMessages(
+  //   String chatroomId, {
+  //   DocumentSnapshot? lastDocument,
+  // }) {
+  //   var query = getchatRoomMessage(
+  //     chatroomId,
+  //   ).orderBy('timeStamp', descending: true).limit(20);
+
+  //   if (lastDocument != null) {
+  //     query = query.startAfterDocument(lastDocument);
+  //   }
+
+  //   return query.snapshots().map(
+  //     (snapshort) =>
+  //         snapshort.docs.map((doc) => ChatMessage.fromFirestore(doc)).toList(),
+  //   );
+  // }
+
   Stream<List<ChatMessage>> getMessages(
-    String chatroomId, {
-    DocumentSnapshot? lastDocument,
-  }) {
-    var query = getchatRoomMessage(
-      chatroomId,
-    ).orderBy('timeStamp', descending: true).limit(20);
+  String chatroomId, {
+  DocumentSnapshot? lastDocument,
+}) {
+  var query = getchatRoomMessage(chatroomId)
+      .orderBy('timestamp', descending: true)
+      .limit(20);
 
-    if (lastDocument != null) {
-      query = query.startAfterDocument(lastDocument);
-    }
-
-    return query.snapshots().map(
-      (snapshort) =>
-          snapshort.docs.map((doc) => ChatMessage.fromFirestore(doc)).toList(),
-    );
+  if (lastDocument != null) {
+    query = query.startAfterDocument(lastDocument);
   }
+
+  return query.snapshots().map(
+    (snapshot) =>
+        snapshot.docs.map(ChatMessage.fromFirestore).toList(),
+  );
+}
+
 
   Future<List<ChatMessage>> getMoreMessages(
     String chatroomId, {

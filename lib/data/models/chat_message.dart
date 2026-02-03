@@ -33,9 +33,9 @@ class ChatMessage {
     return ChatMessage(
       id: doc.id,
       chatRoomId: data['chatRoomId'] as String,
-      senderId: data['senderId'] as String,
+senderId: data['senderId']?.toString() ?? '',
       receiverId: data['receiverId'] as String,
-      content: data['content'] as String,
+content: data['content']?.toString() ?? '',
       type: MessageType.values.firstWhere((e) => e.toString() == data['type'],
           orElse: () => MessageType.text),
       status: MessageStatus.values.firstWhere(

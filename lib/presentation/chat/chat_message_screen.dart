@@ -2,10 +2,10 @@ import 'package:chat_app/data/models/chat_message.dart';
 import 'package:chat_app/data/repositories/chat_repo.dart';
 import 'package:chat_app/logic/chat/chat_cubit.dart';
 import 'package:chat_app/logic/chat/chat_state.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class ChatMessageScreen extends StatefulWidget {
   final String receiverId;
@@ -28,7 +28,6 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
   @override
   void initState() {
     super.initState();
-    print('__________________ here in initState');
 
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
@@ -89,31 +88,31 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
       body: BlocBuilder<ChatCubit, ChatState>(
         bloc: _chatCubit,
         builder: (context, state) {
-          // looding the messages
+          // loding the messages
           if (state.status == ChatStatus.loding) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (state.status == ChatStatus.error) {
-            return Center(
-              child: Text(
-                state.error ?? "SomeThing went wrong",
-                style: TextStyle(
-                  fontSize: 26,
-                  color: Colors.redAccent,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
+          if (state.status == ChatStatus.error) {
+            return Center(child: Text(state.error ?? 'Error'));
+          }
+
+          if (state.messages.isEmpty) {
+            return const Center(child: Text('No messages yet'));
+          }
+
+          print("_______________state.messages.length");
+          print(state.messages.length);
+          print(state.messages);
           return Column(
             children: [
               Expanded(
                 child: ListView.builder(
                   reverse: true,
                   itemCount: state.messages.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    
+
+                  itemBuilder: (context, index) {
+                    print('______________ Here in ListVIew.builder');
                     final messageContent = state.messages[index];
                     final bool isMe =
                         _chatCubit.currentUserId == messageContent.senderId;
@@ -192,6 +191,7 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('__________ here in MessageBubble');
     return Align(
       alignment: isMe
           ? AlignmentGeometry.centerRight
@@ -240,12 +240,10 @@ class MessageBubble extends StatelessWidget {
 
               children: [
                 Text(
-                  message.timestamp.toDate().hour as String,
-                  style: TextStyle(
-                    color: isMe ? Colors.white : Colors.black,
-                    fontSize: 12,
-                  ),
+                  DateFormat('h:mm a').format(message.timestamp.toDate()),
+                  style: TextStyle(color: isMe ? Colors.white : Colors.black),
                 ),
+                
                 Padding(
                   padding: const EdgeInsets.only(left: 4, right: 4),
                   child: Icon(

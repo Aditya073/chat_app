@@ -24,7 +24,7 @@ class ChatCubit extends Cubit<ChatState> {
         currentUserId,
         receiverId,
       );
-      print("_______________________ the chatRoom was created");
+      // print("_______________________ the chatRoom was created");
 
       emit(
         state.copyWith(
@@ -33,7 +33,7 @@ class ChatCubit extends Cubit<ChatState> {
           status: ChatStatus.loaded,
         ),
       );
-
+      print("_________________________subscribeToMessages");
       _subscribeToMessages(chatRoom.id as String);
     } catch (e) {
       emit(
@@ -89,7 +89,9 @@ class ChatCubit extends Cubit<ChatState> {
         .getMessages(chatRoomId)
         .listen(
           (messages) {
-            emit(state.copyWith(messages: messages, error: null));
+            print("_______________________messages");
+            print(messages);
+            emit(state.copyWith(messages: messages,status: ChatStatus.loaded, error: null));
           },
           onError: (error) {
             emit(
