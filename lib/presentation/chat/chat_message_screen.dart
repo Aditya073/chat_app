@@ -90,15 +90,15 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
         builder: (context, state) {
           // loding the messages
           if (state.status == ChatStatus.loding) {
-            return const Center(child: CircularProgressIndicator());
+            Center(child: CircularProgressIndicator());
           }
 
           if (state.status == ChatStatus.error) {
-            return Center(child: Text(state.error ?? 'Error'));
+            Center(child: Text(state.error ?? 'Error'));
           }
 
           if (state.messages.isEmpty) {
-            return const Center(child: Text('No messages yet'));
+            Center(child: Text('No messages yet'));
           }
 
           print("_______________state.messages.length");
@@ -145,7 +145,7 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                               horizontal: 12,
                               vertical: 8,
                             ),
-              
+
                             border: OutlineInputBorder(
                               borderSide: BorderSide.none,
                               borderRadius: BorderRadius.circular(24),
@@ -243,7 +243,7 @@ class MessageBubble extends StatelessWidget {
                   DateFormat('h:mm a').format(message.timestamp.toDate()),
                   style: TextStyle(color: isMe ? Colors.white : Colors.black),
                 ),
-                
+
                 Padding(
                   padding: const EdgeInsets.only(left: 4, right: 4),
                   child: Icon(

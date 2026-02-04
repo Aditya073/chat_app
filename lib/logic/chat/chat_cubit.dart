@@ -31,7 +31,7 @@ class ChatCubit extends Cubit<ChatState> {
         ),
       );
       print("_________________________subscribeToMessages");
-      _subscribeToMessages(chatRoom.id as String);
+      _subscribeToMessages(chatRoom.id!);
     } catch (e) {
       emit(
         state.copyWith(
@@ -43,42 +43,93 @@ class ChatCubit extends Cubit<ChatState> {
   }
 
   // Send messages method
+
   Future<void> sendMessage({
-    required String content,
-    required String receiverId,
-  }) async {
-    late final chatRoom;
-    try {
-      if (state.chatRoomId == null) {
-        print("____________state.chatRoomId == null");
+  required String content,
+  required String receiverId,
+}) async {
+  try {
+    String chatRoomId = state.chatRoomId ?? '';
 
-        // this will get the chatRoomId if it is null
-        chatRoom = await _chatRepository.getOrCreateChatRoom(
-          currentUserId,
-          receiverId,
-        );
-        emit(
-          state.copyWith(
-            chatRoomId: chatRoom.id,
-            receiverId: receiverId,
-            status: ChatStatus.loaded,
-          ),
-        );
-      }
+    // If chatRoomId doesn't exist, create it
+    if (chatRoomId.isEmpty) {
+      print("____________ creating chatRoom");
 
-      print("____________________chatRoom.id");
-      print(chatRoom.id);
-      await _chatRepository.sendMessage(
-        chatRoomId: chatRoom.id!,
-        senderId: currentUserId,
-        receiverId: receiverId,
-        content: content,
+      final chatRoom = await _chatRepository.getOrCreateChatRoom(
+        currentUserId,
+        receiverId,
       );
-    } catch (e) {
-      emit(state.copyWith(error: "Failed to send the message $e"));
-      throw e.toString();
+
+      chatRoomId = chatRoom.id!;
+
+      emit(
+        state.copyWith(
+          chatRoomId: chatRoomId,
+          receiverId: receiverId,
+          status: ChatStatus.loaded,
+        ),
+      );
+
+      // Start listening immediately
+      _subscribeToMessages(chatRoomId);
     }
+
+    print("____________________sending message to:");
+    print(chatRoomId);
+
+    await _chatRepository.sendMessage(
+      chatRoomId: chatRoomId,
+      senderId: currentUserId,
+      receiverId: receiverId,
+      content: content,
+    );
+  } catch (e) {
+    emit(state.copyWith(
+      status: ChatStatus.error,
+      error: "Failed to send message: $e",
+    ));
+    rethrow;
   }
+}
+
+
+  // Future<void> sendMessage({
+  //   required String content,
+  //   required String receiverId,
+  // }) async {
+  //   late final chatRoom;
+  //   try {
+  //     if (state.chatRoomId == null) {
+  //       print("____________state.chatRoomId == null");
+
+  //       // this will get the chatRoomId if it is null
+  //       chatRoom = await _chatRepository.getOrCreateChatRoom(
+  //         currentUserId,
+  //         receiverId,
+  //       );
+  //       chatRoom.
+  //       emit(
+  //         state.copyWith(
+  //           chatRoomId: chatRoom.id,
+  //           receiverId: receiverId,
+  //           status: ChatStatus.loaded,
+  //         ),
+  //       );
+  //     }
+
+  //     print("____________________chatRoom.id");
+  //     print(chatRoom.id);
+  //     await _chatRepository.sendMessage(
+  //       chatRoomId: chatRoom.id!,
+  //       senderId: currentUserId,
+  //       receiverId: receiverId,
+  //       content: content,
+  //     );
+  //   } catch (e) {
+  //     emit(state.copyWith(error: "Failed to send the message $e"));
+  //     throw e.toString();
+  //   }
+  // }
 
   void _subscribeToMessages(String chatRoomId) {
     _messagesSubscription?.cancel();
@@ -93,7 +144,7 @@ class ChatCubit extends Cubit<ChatState> {
           onError: (error) {
             emit(
               state.copyWith(
-                error: "Failed to send message",
+                error: "Failed to load messages",
                 status: ChatStatus.error,
               ),
             );
