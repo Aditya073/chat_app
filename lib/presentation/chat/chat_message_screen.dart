@@ -145,7 +145,7 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                               horizontal: 12,
                               vertical: 8,
                             ),
-
+              
                             border: OutlineInputBorder(
                               borderSide: BorderSide.none,
                               borderRadius: BorderRadius.circular(24),

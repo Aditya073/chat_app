@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:chat_app/data/models/user_model.dart';
 import 'package:chat_app/data/services/base_repositories.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthRepo extends BaseRepositories {
@@ -10,65 +11,122 @@ class AuthRepo extends BaseRepositories {
   Stream<User?> get authStateChanges => auth.authStateChanges();
 
   // SignUp Method
-  signUp({
-    required String fullName,
-    required String userName,
-    required String email,
-    required String password,
-    required String phoneNumber,
-  }) async {
-    try {
-      final formatePhoneNumber = phoneNumber.replaceAll(
-        RegExp(r'\s+'),
-        "".trim(),
-      );
+  // signUp({
+  //   required String fullName,
+  //   required String userName,
+  //   required String email,
+  //   required String password,
+  //   required String phoneNumber,
+  // }) async {
+  //   try {
+  //     final formatePhoneNumber = phoneNumber.replaceAll(
+  //       RegExp(r'\s+'),
+  //       "".trim(),
+  //     );
 
-      final emailExists = await checkEmailExists(email);
-      if (emailExists) {
-        throw "An account with same email exists";
-      }
+  //     final emailExists = await checkEmailExists(email);
+  //     if (emailExists) {
+  //       throw "An account with same email exists";
+  //     }
 
-      final phoneNumberExists = await checkingPhonenumberExists(phoneNumber);
-      if (phoneNumberExists) {
-        throw "An account with same phone number exists";
-      }
+  //     final phoneNumberExists = await checkingPhonenumberExists(phoneNumber);
+  //     if (phoneNumberExists) {
+  //       throw "An account with same phone number exists";
+  //     }
 
 
-      final userNameExists = await checkingUsernameExists(userName);
-      if (userNameExists) {
-        throw "An account with same username exists";
-      }
+  //     final userNameExists = await checkingUsernameExists(userName);
+  //     if (userNameExists) {
+  //       throw "An account with same username exists";
+  //     }
 
-      // this creates the user based on the email and password
-      final createUser = await auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      if (createUser.user == null) {
-        return "Failed to create user";
-      }
+  //     // this creates the user based on the email and password
+  //     final createUser = await auth.createUserWithEmailAndPassword(
+  //       email: email,
+  //       password: password,
+  //     );
+  //     if (createUser.user == null) {
+  //       return "Failed to create user";
+  //     }
 
-      // the user model is created so we can send this to the firestore database
-      user = UserModel(
-        uid: createUser.user!.uid,
-        userName: userName,
-        fullName: fullName,
-        email: email,
-        password: password,
-        phoneNumber: formatePhoneNumber,
-      );
+  //     // the user model is created so we can send this to the firestore database
+  //     user = UserModel(
+  //       uid: createUser.user!.uid,
+  //       userName: userName,
+  //       fullName: fullName,
+  //       email: email,
+  //       password: password,
+  //       phoneNumber: formatePhoneNumber,
+  //     );
 
-      try {
-        // this adds the user info on firebase
-        await firestore.collection("users").doc(user.uid).set(user.toMap());
-      } catch (e) {
-        return "User already exists";
-      }
-    } catch (e) {
-      print(e.toString());
+  //     try {
+  //       // this adds the user info on firebase
+  //       await firestore.collection("users").doc(user.uid).set(user.toMap());
+  //     } catch (e) {
+  //       return "User already exists";
+  //     }
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  //   return user; // and we return the usermodel from this function
+  // }
+  Future<UserModel> signUp({
+  required String fullName,
+  required String userName,
+  required String email,
+  required String password,
+  required String phoneNumber,
+}) async {
+  try {
+    final formattedPhone = phoneNumber.replaceAll(RegExp(r'\s+'), '');
+
+    // 🔍 checks
+    if (await checkEmailExists(email)) {
+      throw Exception("Email already exists");
     }
-    return user; // and we return the usermodel from this function
+
+    if (await checkingPhonenumberExists(formattedPhone)) {
+      throw Exception("Phone number already exists");
+    }
+
+    if (await checkingUsernameExists(userName)) {
+      throw Exception("Username already exists");
+    }
+
+    // 🔐 Firebase Auth signup
+    final credential = await auth.createUserWithEmailAndPassword(
+      email: email.trim(),
+      password: password,
+    );
+
+    final firebaseUser = credential.user;
+    if (firebaseUser == null) {
+      throw Exception("Failed to create auth user");
+    }
+
+    // 🧠 Create user model
+    final userModel = UserModel(
+      uid: firebaseUser.uid,
+      fullName: fullName.trim(),
+      userName: userName.trim(),
+      email: email.trim(),
+      phoneNumber: formattedPhone,
+      password: password,
+    );
+
+    // 🧾 ALWAYS create Firestore document
+    await firestore
+        .collection("users")
+        .doc(firebaseUser.uid)
+        .set(userModel.toMap(), SetOptions(merge: false));
+
+    return userModel;
+  } catch (e) {
+    log("Signup error: $e");
+    rethrow;
   }
+}
+
 
   // SignIn Method
 
