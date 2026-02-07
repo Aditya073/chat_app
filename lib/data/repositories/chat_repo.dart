@@ -105,23 +105,21 @@ class ChatRepo extends BaseRepositories {
 
   // get the above messages
   Stream<List<ChatMessage>> getMessages(
-  String chatroomId, {
-  DocumentSnapshot? lastDocument,
-}) {
-  var query = getchatRoomMessage(chatroomId)
-      .orderBy('timestamp', descending: true)
-      .limit(20);
+    String chatroomId, {
+    DocumentSnapshot? lastDocument,
+  }) {
+    var query = getchatRoomMessage(
+      chatroomId,
+    ).orderBy('timestamp', descending: true).limit(20);
 
-  if (lastDocument != null) {
-    query = query.startAfterDocument(lastDocument);
+    if (lastDocument != null) {
+      query = query.startAfterDocument(lastDocument);
+    }
+
+    return query.snapshots().map(
+      (snapshot) => snapshot.docs.map(ChatMessage.fromFirestore).toList(),
+    );
   }
-
-  return query.snapshots().map(
-    (snapshot) =>
-        snapshot.docs.map(ChatMessage.fromFirestore).toList(),
-  );
-}
-
 
   Future<List<ChatMessage>> getMoreMessages(
     String chatroomId, {
@@ -135,5 +133,20 @@ class ChatRepo extends BaseRepositories {
     final snapshort = await query.get();
 
     return snapshort.docs.map((doc) => ChatMessage.fromFirestore(doc)).toList();
+  }
+
+  // To display chatRoom on users home screen
+  Stream<List<ChatRoomModel>> getChatRoom(String userId) {
+    // from "chatRoom" ---> search through "partcapents" ---> if "userId" is present  ---> and sort based on "lastmessageTime"
+
+    return _chatRooms
+        .where('participants', arrayContains: userId)
+        .orderBy("lastMessageTime", descending: true)
+        .snapshots()
+        .map(
+          (snapshort) => snapshort.docs
+              .map((doc) => ChatRoomModel.fromFirestore(doc))
+              .toList(),
+        );
   }
 }

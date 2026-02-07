@@ -1,7 +1,10 @@
+import 'package:chat_app/data/repositories/chat_repo.dart';
 import 'package:chat_app/data/repositories/contact_repo.dart';
 import 'package:chat_app/logic/cubits/auth_cubit.dart';
 import 'package:chat_app/presentation/chat/chat_message_screen.dart';
 import 'package:chat_app/presentation/screens/auth/login_screen.dart';
+import 'package:chat_app/presentation/widgets/chat_room_display.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,9 +17,13 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late final ContactRepo _contactRepo;
+  late final ChatRepo _chatRepo;
+  late final String _currentUserId;
   @override
   void initState() {
     _contactRepo = ContactRepo();
+    _chatRepo = ChatRepo();
+    _currentUserId = FirebaseAuth.instance.currentUser!.uid;
     super.initState();
   }
 
@@ -158,8 +165,8 @@ class _HomeState extends State<Home> {
               Expanded(
                 child: Container(
                   // Container design
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
+                  // height: MediaQuery.of(context).size.height,
+                  // width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -196,9 +203,46 @@ class _HomeState extends State<Home> {
                       ),
 
                       // Display all the chats
+                      Expanded(
+                        child: StreamBuilder(
+                          stream: _chatRepo.getChatRoom(_currentUserId),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              print("_____________error ${snapshot.error}");
+                              return Center(
+                                child: Text('Error: ${snapshot.error}'),
+                              );
+                            }
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            final chats = snapshot.data ?? [];
+                            print(chats.length);
+                            print(chats);
+                            if (chats.isEmpty) {
+                              return Center(child: Text("No recent chats"));
+                            }
+                            return ListView.builder(
+                              // shrinkWrap: true,
+                              // physics: NeverScrollableScrollPhysics(),
+                              itemCount: chats.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final chat = chats[index];
+                                return ChatRoomDisplay(
+                                  chat: chat,
+                                  currentUserId: _currentUserId,
+                                  onTap: () {},
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   ),
-
                 ),
               ),
             ],
@@ -209,7 +253,7 @@ class _HomeState extends State<Home> {
       // Display all the contacts
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // on Click should display all the contacts 
+          // on Click should display all the contacts
           print('__________________the (floatingActionButton) was clicked');
           _showContactList(context);
         },
