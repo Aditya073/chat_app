@@ -12,12 +12,6 @@ class ChatRoomDisplay extends StatelessWidget {
     required this.onTap,
   });
 
-  // String _getOtherUserId() {
-  //   final otherUserId = chat.participants.firstWhere(
-  //     (id) => id != currentUserId,
-  //   );
-  //   return chat.participantsName![otherUserId] ?? "unKnown";
-  // }
   String _getOtherUserName() {
   try {
     final otherUserId = chat.participants.firstWhere(
@@ -40,6 +34,7 @@ class ChatRoomDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: onTap,
       leading: CircleAvatar(
         backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
 

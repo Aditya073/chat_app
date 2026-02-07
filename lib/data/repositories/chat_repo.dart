@@ -41,8 +41,8 @@ class ChatRepo extends BaseRepositories {
             as Map<String, dynamic>;
 
     final participantsName = {
-      currentUserId: currentUserData['Fullname']?.toString() ?? "",
-      otherUserId: otherUserData['Fullname']?.toString() ?? "",
+      currentUserId: currentUserData['fullName']?.toString() ?? "",
+      otherUserId: otherUserData['fullName']?.toString() ?? "",
     };
 
     // if room dosen`t exsists then create it

@@ -225,16 +225,34 @@ class _HomeState extends State<Home> {
                             if (chats.isEmpty) {
                               return Center(child: Text("No recent chats"));
                             }
+                            
+                            // displaying the number of contacts the user is talking to
                             return ListView.builder(
-                              // shrinkWrap: true,
-                              // physics: NeverScrollableScrollPhysics(),
                               itemCount: chats.length,
                               itemBuilder: (BuildContext context, int index) {
                                 final chat = chats[index];
                                 return ChatRoomDisplay(
                                   chat: chat,
                                   currentUserId: _currentUserId,
-                                  onTap: () {},
+                                  onTap: () {
+                                    final otherUserId = chat.participants
+                                        .firstWhere(
+                                          (id) => id != _currentUserId,
+                                        );
+
+                                    final otherUserName =
+                                        chat.participantsName![otherUserId] ??
+                                        "Unknown";
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ChatMessageScreen(
+                                          receiverId: otherUserId,
+                                          receiverName: otherUserName,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 );
                               },
                             );
