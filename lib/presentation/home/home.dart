@@ -145,18 +145,29 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                   ),
+                  // Logout
                   Padding(
-                    padding: const EdgeInsets.only(right: 15),
-                    child: IconButton(
-                      onPressed: () {
-                        // Search for a person
-                      },
-                      icon: Icon(
-                        Icons.search,
-                        size: 24,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            context.read<AuthCubit>().signOut();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginScreen(),
+                              ),
+                            );
+                          },
+                          icon: Icon(
+                            Icons.logout_rounded,
+                            color: Theme.of(context).colorScheme.secondary,
+                            size: 28,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -165,8 +176,7 @@ class _HomeState extends State<Home> {
               Expanded(
                 child: Container(
                   // Container design
-                  // height: MediaQuery.of(context).size.height,
-                  // width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.only(top: 15),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -176,32 +186,6 @@ class _HomeState extends State<Home> {
                   ),
                   child: Column(
                     children: [
-                      // Logout
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                context.read<AuthCubit>().signOut();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => LoginScreen(),
-                                  ),
-                                );
-                              },
-                              icon: Icon(
-                                Icons.logout_rounded,
-                                color: Theme.of(context).colorScheme.secondary,
-                                size: 28,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
                       // Display all the chats
                       Expanded(
                         child: StreamBuilder(
@@ -220,12 +204,10 @@ class _HomeState extends State<Home> {
                               );
                             }
                             final chats = snapshot.data ?? [];
-                            print(chats.length);
-                            print(chats);
                             if (chats.isEmpty) {
                               return Center(child: Text("No recent chats"));
                             }
-                            
+
                             // displaying the number of contacts the user is talking to
                             return ListView.builder(
                               itemCount: chats.length,

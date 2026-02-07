@@ -13,23 +13,22 @@ class ChatRoomDisplay extends StatelessWidget {
   });
 
   String _getOtherUserName() {
-  try {
-    final otherUserId = chat.participants.firstWhere(
-      (id) => id != currentUserId,
-    );
+    try {
+      final otherUserId = chat.participants.firstWhere(
+        (id) => id != currentUserId,
+      );
 
-    final name = chat.participantsName?[otherUserId];
+      final name = chat.participantsName?[otherUserId];
 
-    if (name == null || name.trim().isEmpty) {
+      if (name == null || name.trim().isEmpty) {
+        return "Unknown";
+      }
+
+      return name;
+    } catch (e) {
       return "Unknown";
     }
-
-    return name;
-  } catch (e) {
-    return "Unknown";
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -44,18 +43,25 @@ class ChatRoomDisplay extends StatelessWidget {
         _getOtherUserName(),
         style: TextStyle(fontWeight: FontWeight.w500),
       ),
-      subtitle: Text(
-        chat.lastMessage ?? "",
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(color: Colors.grey),
+      subtitle: Row(
+        children: [
+          Expanded(
+            child: Text(
+              chat.lastMessage ?? "",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.grey),
+            ),
+          ),
+        ],
       ),
       trailing: Container(
+        padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: Theme.of(context).primaryColor,
           shape: BoxShape.circle,
         ),
-        child: Text('3'),
+        child: Text('3', style: TextStyle(color: Colors.white)),
       ),
     );
   }
