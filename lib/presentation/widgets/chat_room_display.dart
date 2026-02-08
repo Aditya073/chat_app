@@ -1,4 +1,5 @@
 import 'package:chat_app/data/models/chat_room_model.dart';
+import 'package:chat_app/data/repositories/chat_repo.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomDisplay extends StatelessWidget {
@@ -55,13 +56,21 @@ class ChatRoomDisplay extends StatelessWidget {
           ),
         ],
       ),
-      trailing: Container(
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          shape: BoxShape.circle,
-        ),
-        child: Text('3', style: TextStyle(color: Colors.white)),
+      trailing: StreamBuilder<int>(
+        stream: ChatRepo().getUnreadCount(chat.id!, currentUserId),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData || snapshot.data == 0) {
+            return const SizedBox();
+          }
+          return Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              shape: BoxShape.circle,
+            ),
+            child: Text(snapshot.data.toString(), style: TextStyle(color: Colors.white)),
+          );
+        },
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:chat_app/data/models/chat_message.dart';
 import 'package:chat_app/data/repositories/chat_repo.dart';
 import 'package:chat_app/logic/chat/chat_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,53 +46,54 @@ class ChatCubit extends Cubit<ChatState> {
   // Send messages method
 
   Future<void> sendMessage({
-  required String content,
-  required String receiverId,
-}) async {
-  try {
-    String chatRoomId = state.chatRoomId ?? '';
+    required String content,
+    required String receiverId,
+  }) async {
+    try {
+      String chatRoomId = state.chatRoomId ?? '';
 
-    // If chatRoomId doesn't exist, create it
-    if (chatRoomId.isEmpty) {
-      print("____________ creating chatRoom");
+      // If chatRoomId doesn't exist, create it
+      if (chatRoomId.isEmpty) {
+        print("____________ creating chatRoom");
 
-      final chatRoom = await _chatRepository.getOrCreateChatRoom(
-        currentUserId,
-        receiverId,
+        final chatRoom = await _chatRepository.getOrCreateChatRoom(
+          currentUserId,
+          receiverId,
+        );
+
+        chatRoomId = chatRoom.id!;
+
+        emit(
+          state.copyWith(
+            chatRoomId: chatRoomId,
+            receiverId: receiverId,
+            status: ChatStatus.loaded,
+          ),
+        );
+
+        // Start listening immediately
+        _subscribeToMessages(chatRoomId);
+      }
+
+      print("____________________sending message to:");
+      print(chatRoomId);
+
+      await _chatRepository.sendMessage(
+        chatRoomId: chatRoomId,
+        senderId: currentUserId,
+        receiverId: receiverId,
+        content: content,
       );
-
-      chatRoomId = chatRoom.id!;
-
+    } catch (e) {
       emit(
         state.copyWith(
-          chatRoomId: chatRoomId,
-          receiverId: receiverId,
-          status: ChatStatus.loaded,
+          status: ChatStatus.error,
+          error: "Failed to send message: $e",
         ),
       );
-
-      // Start listening immediately
-      _subscribeToMessages(chatRoomId);
+      rethrow;
     }
-
-    print("____________________sending message to:");
-    print(chatRoomId);
-
-    await _chatRepository.sendMessage(
-      chatRoomId: chatRoomId,
-      senderId: currentUserId,
-      receiverId: receiverId,
-      content: content,
-    );
-  } catch (e) {
-    emit(state.copyWith(
-      status: ChatStatus.error,
-      error: "Failed to send message: $e",
-    ));
-    rethrow;
   }
-}
-
 
   // Future<void> sendMessage({
   //   required String content,
@@ -139,7 +141,13 @@ class ChatCubit extends Cubit<ChatState> {
           (messages) {
             print("_______________________messages");
             print(messages);
-            emit(state.copyWith(messages: messages,status: ChatStatus.loaded, error: null));
+            emit(
+              state.copyWith(
+                messages: messages,
+                status: ChatStatus.loaded,
+                error: null,
+              ),
+            );
           },
           onError: (error) {
             emit(

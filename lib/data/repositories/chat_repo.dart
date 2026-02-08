@@ -149,4 +149,28 @@ class ChatRepo extends BaseRepositories {
               .toList(),
         );
   }
+
+  // Gets the count of unread message
+  Stream<int> getUnreadCount(String chatRoomId, String userId) {
+    return getchatRoomMessage(
+          chatRoomId,
+        ) // "getchatRoomMessage" will get the 'message' collection
+        .where("receiverId", isEqualTo: userId)
+        .where("status", isEqualTo: MessageStatus.sent.toString())
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
+  }
+
+  Future<void> readTheUnreadMessages(
+    String chatRoomId,
+    String currentUserId,
+  ) async {
+    try {
+      final batch = firestore.batch();
+
+      // get the unRead messages
+      
+
+    } catch (e) {}
+  }
 }

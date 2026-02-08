@@ -22,7 +22,7 @@ class ChatMessageScreen extends StatefulWidget {
 
 class _ChatMessageScreenState extends State<ChatMessageScreen> {
   final TextEditingController message = TextEditingController();
-
+  late final ChatMessage messageStatusUpdate;
   late final ChatCubit _chatCubit;
 
   @override
@@ -100,10 +100,6 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
           if (state.messages.isEmpty) {
             Center(child: Text('No messages yet'));
           }
-
-          print("_______________state.messages.length");
-          print(state.messages.length);
-          print(state.messages);
           return Column(
             children: [
               Expanded(
@@ -112,11 +108,9 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                   itemCount: state.messages.length,
 
                   itemBuilder: (context, index) {
-                    print('______________ Here in ListVIew.builder');
                     final messageContent = state.messages[index];
                     final bool isMe =
                         _chatCubit.currentUserId == messageContent.senderId;
-
                     return MessageBubble(isMe: isMe, message: messageContent);
                   },
                 ),
@@ -184,6 +178,8 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
   }
 }
 
+// this is to create the textMessage bubble
+
 class MessageBubble extends StatelessWidget {
   final ChatMessage message;
   final bool isMe;
@@ -192,6 +188,7 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('__________ here in MessageBubble');
+
     return Align(
       alignment: isMe
           ? AlignmentGeometry.centerRight
