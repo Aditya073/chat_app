@@ -161,9 +161,9 @@ class ChatRepo extends BaseRepositories {
         .map((snapshot) => snapshot.docs.length);
   }
 
-  Future<void> readTheUnreadMessages(
+  Future<void> readTheUnreadMessages( //fix the logical error
     String chatRoomId,
-    String currentUserId,
+    String userId,
   ) async {
     try {
       print("________________ in chatRepo _readTheUnreadMessages");
@@ -175,7 +175,7 @@ class ChatRepo extends BaseRepositories {
           await getchatRoomMessage(
                 chatRoomId,
               ) // "getchatRoomMessage" will get the 'message' collection
-              .where("receiverId", isEqualTo: currentUserId)
+              .where("receiverId", isEqualTo: userId)
               .where("status", isEqualTo: MessageStatus.sent.toString())
               .get();
 
@@ -184,7 +184,7 @@ class ChatRepo extends BaseRepositories {
       for (var doc in unReadMessages.docs) {
         batch.update(doc.reference, {
           "readBy": FieldValue.arrayUnion([
-            currentUserId,
+            userId,
           ]), // make it read by the receiver
           "status": MessageStatus.read.toString(), // update the message Status
         });
