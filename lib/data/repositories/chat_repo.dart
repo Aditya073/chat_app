@@ -166,11 +166,37 @@ class ChatRepo extends BaseRepositories {
     String currentUserId,
   ) async {
     try {
+      print("________________ in chatRepo _readTheUnreadMessages");
+
       final batch = firestore.batch();
 
       // get the unRead messages
-      
+      final unReadMessages =
+          await getchatRoomMessage(
+                chatRoomId,
+              ) // "getchatRoomMessage" will get the 'message' collection
+              .where("receiverId", isEqualTo: currentUserId)
+              .where("status", isEqualTo: MessageStatus.sent.toString())
+              .get();
 
-    } catch (e) {}
+      print("Found ${unReadMessages.docs.length} unread Messages");
+
+      for (var doc in unReadMessages.docs) {
+        batch.update(doc.reference, {
+          "readBy": FieldValue.arrayUnion([
+            currentUserId,
+          ]), // make it read by the receiver
+          "status": MessageStatus.read.toString(), // update the message Status
+        });
+      }
+
+      await batch.commit();
+
+      print(
+        "_________________________ in chatRepo _readTheUnreadMessages update complete",
+      );
+    } catch (e) {
+      throw "Error :- ${e.toString()}";
+    }
   }
 }

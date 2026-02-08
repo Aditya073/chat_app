@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:chat_app/data/models/chat_message.dart';
 import 'package:chat_app/data/repositories/chat_repo.dart';
 import 'package:chat_app/logic/chat/chat_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ChatCubit extends Cubit<ChatState> {
   final ChatRepo _chatRepository;
   final String currentUserId;
+  bool _isOnline = false;
 
   StreamSubscription? _messagesSubscription;
 
@@ -16,6 +16,9 @@ class ChatCubit extends Cubit<ChatState> {
 
   Future<void> enterChat(String receiverId) async {
     emit(state.copyWith(status: ChatStatus.loding));
+    _isOnline = true;
+    print("_____________________________________isOnline");
+    print(_isOnline);
 
     try {
       final chatRoom = await _chatRepository.getOrCreateChatRoom(
@@ -95,44 +98,6 @@ class ChatCubit extends Cubit<ChatState> {
     }
   }
 
-  // Future<void> sendMessage({
-  //   required String content,
-  //   required String receiverId,
-  // }) async {
-  //   late final chatRoom;
-  //   try {
-  //     if (state.chatRoomId == null) {
-  //       print("____________state.chatRoomId == null");
-
-  //       // this will get the chatRoomId if it is null
-  //       chatRoom = await _chatRepository.getOrCreateChatRoom(
-  //         currentUserId,
-  //         receiverId,
-  //       );
-  //       chatRoom.
-  //       emit(
-  //         state.copyWith(
-  //           chatRoomId: chatRoom.id,
-  //           receiverId: receiverId,
-  //           status: ChatStatus.loaded,
-  //         ),
-  //       );
-  //     }
-
-  //     print("____________________chatRoom.id");
-  //     print(chatRoom.id);
-  //     await _chatRepository.sendMessage(
-  //       chatRoomId: chatRoom.id!,
-  //       senderId: currentUserId,
-  //       receiverId: receiverId,
-  //       content: content,
-  //     );
-  //   } catch (e) {
-  //     emit(state.copyWith(error: "Failed to send the message $e"));
-  //     throw e.toString();
-  //   }
-  // }
-
   void _subscribeToMessages(String chatRoomId) {
     _messagesSubscription?.cancel();
     _messagesSubscription = _chatRepository
@@ -148,6 +113,10 @@ class ChatCubit extends Cubit<ChatState> {
                 error: null,
               ),
             );
+
+            if (_isOnline) {
+              _readTheUnreadMessages(chatRoomId);
+            }
           },
           onError: (error) {
             emit(
@@ -158,5 +127,14 @@ class ChatCubit extends Cubit<ChatState> {
             );
           },
         );
+  }
+
+  Future<void> _readTheUnreadMessages(String chatRoomId) async {
+    try {
+      print("________________ in cubit _readTheUnreadMessages");
+      await _chatRepository.readTheUnreadMessages(chatRoomId, currentUserId);
+    } catch (e) {
+      throw ("error marking messages as read $e");
+    }
   }
 }
