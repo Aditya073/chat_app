@@ -138,7 +138,8 @@ class ChatCubit extends Cubit<ChatState> {
     }
   }
 
-  // 
+  // added this to make "_isOnline" false whenever the user leaves
+  // or else it will always show that the messages were read by the receiver even tho he/she is not online 
   Future<void> leaveChat() async {
     _isOnline = false;
   }

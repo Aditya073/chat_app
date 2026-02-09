@@ -56,10 +56,6 @@ class ChatRepo extends BaseRepositories {
       },
     );
 
-    print(
-      "__________________________we are creating a chatRoom using (currentUserData) and (otherUserData)",
-    );
-
     await firestore.collection('chatRooms').doc(roomId).set(newRoom.toMap());
     print("_______________________the chatRoom is now created");
     return newRoom;
@@ -167,7 +163,6 @@ class ChatRepo extends BaseRepositories {
     String userId, // the sender
   ) async {
     try {
-      print("________________ in chatRepo _readTheUnreadMessages");
 
       final batch = firestore.batch();
 
@@ -191,12 +186,10 @@ class ChatRepo extends BaseRepositories {
           "status": MessageStatus.read.toString(), // update the message Status
         });
       }
-
+         
+      // imp to commit the changes
       await batch.commit();
 
-      print(
-        "_________________________ in chatRepo _readTheUnreadMessages update complete",
-      );
     } catch (e) {
       throw "Error :- ${e.toString()}";
     }

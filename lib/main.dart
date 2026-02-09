@@ -1,4 +1,3 @@
-import 'package:chat_app/presentation/home/home.dart';
 import 'package:chat_app/config/theme/app_theme.dart';
 import 'package:chat_app/data/repositories/auth_repo.dart';
 import 'package:chat_app/logic/cubits/auth_cubit.dart';
@@ -8,7 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() async { //7:04
+void main() async {               // isOnline Status
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
