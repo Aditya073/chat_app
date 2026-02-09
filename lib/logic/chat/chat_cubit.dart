@@ -15,8 +15,8 @@ class ChatCubit extends Cubit<ChatState> {
       super(ChatState());
 
   Future<void> enterChat(String receiverId) async {
-    emit(state.copyWith(status: ChatStatus.loding));
     _isOnline = true;
+    emit(state.copyWith(status: ChatStatus.loding));
     print("_____________________________________isOnline");
     print(_isOnline);
 
@@ -136,5 +136,10 @@ class ChatCubit extends Cubit<ChatState> {
     } catch (e) {
       throw ("error marking messages as read $e");
     }
+  }
+
+  // 
+  Future<void> leaveChat() async {
+    _isOnline = false;
   }
 }

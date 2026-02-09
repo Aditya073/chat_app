@@ -5,6 +5,7 @@ import 'package:chat_app/logic/chat/chat_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 
 class ChatMessageScreen extends StatefulWidget {
@@ -41,6 +42,12 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
 
     _chatCubit = ChatCubit(chatRepository: ChatRepo(), currentUserId: user.uid);
     _chatCubit.enterChat(widget.receiverId);
+  }
+
+  @override
+  void dispose() {
+    _chatCubit.leaveChat();
+    super.dispose();
   }
 
   Future<void> handleSendingMessage() async {
@@ -240,20 +247,22 @@ class MessageBubble extends StatelessWidget {
                   DateFormat('h:mm a').format(message.timestamp.toDate()),
                   style: TextStyle(color: isMe ? Colors.white : Colors.black),
                 ),
-
-                Padding(
-                  padding: const EdgeInsets.only(left: 4, right: 4),
-                  child: Icon(
-                    message.status == MessageStatus.read
-                        ? Icons.done_all
-                        : Icons.done,
-                    // Icons.done_all,
-                    size: 18,
-                    color: message.status == MessageStatus.read
-                        ? Colors.blueAccent
-                        : Colors.black,
+                if (isMe) ...[
+                  const SizedBox(width: 4),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4, right: 4),
+                    child: Icon(
+                      (message.status == MessageStatus.read)
+                          ? Icons.done_all
+                          : Icons.done,
+                      // Icons.done_all,
+                      size: 18,
+                      color: (message.status == MessageStatus.read)
+                          ? Colors.blueAccent
+                          : Colors.black,
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           ],

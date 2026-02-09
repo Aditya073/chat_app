@@ -161,26 +161,28 @@ class ChatRepo extends BaseRepositories {
         .map((snapshot) => snapshot.docs.length);
   }
 
-  Future<void> readTheUnreadMessages( //fix the logical error
+  // unRead Messages => the receiver has not seen the message
+  Future<void> readTheUnreadMessages(
     String chatRoomId,
-    String userId,
+    String userId, // the sender
   ) async {
     try {
       print("________________ in chatRepo _readTheUnreadMessages");
 
       final batch = firestore.batch();
 
-      // get the unRead messages
+      // get the unRead messages where user is the receiver
       final unReadMessages =
           await getchatRoomMessage(
                 chatRoomId,
-              ) // "getchatRoomMessage" will get the 'message' collection
+              ) // "getchatRoomMessage" will get the 'message' collection inside ChatRoom
               .where("receiverId", isEqualTo: userId)
               .where("status", isEqualTo: MessageStatus.sent.toString())
               .get();
 
       print("Found ${unReadMessages.docs.length} unread Messages");
 
+      // mark these unread messages as read by the receiver
       for (var doc in unReadMessages.docs) {
         batch.update(doc.reference, {
           "readBy": FieldValue.arrayUnion([
