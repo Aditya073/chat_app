@@ -80,9 +80,34 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                   widget.receiverName,
                   style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
                 ),
-                Text(
-                  'last seen at (time)',
-                  style: TextStyle(fontSize: 12, color: Colors.black54),
+
+                // isOnline, isTyping, lastSeen
+                BlocBuilder<ChatCubit, ChatState>(
+                  bloc: _chatCubit,
+                  builder: (context, state) {
+                    if (state.isReceiverTyping) {
+                      return Text(
+                        'Typing...',
+                        style: TextStyle(fontSize: 12, color: Colors.black54),
+                      );
+                    }
+
+                    if (state.isReceiverOnline) {
+                      return Text(
+                        'Online',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.greenAccent,
+                        ),
+                      );
+                    } else {
+                      final lastSeen = state.receiverLastSeen!.toDate();
+                      return Text(
+                        'last seen ${DateFormat('h:mm a').format(lastSeen)}',
+                        style: TextStyle(fontSize: 12, color: Colors.black54),
+                      );
+                    }
+                  },
                 ),
               ],
             ),

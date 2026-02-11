@@ -163,7 +163,6 @@ class ChatRepo extends BaseRepositories {
     String userId, // the sender
   ) async {
     try {
-
       final batch = firestore.batch();
 
       // get the unRead messages where user is the receiver
@@ -186,12 +185,48 @@ class ChatRepo extends BaseRepositories {
           "status": MessageStatus.read.toString(), // update the message Status
         });
       }
-         
+
       // imp to commit the changes
       await batch.commit();
-
     } catch (e) {
       throw "Error :- ${e.toString()}";
     }
+  }
+
+  Stream<Map<String, dynamic>> getUsersOnlineStatus(String userId) {
+    return firestore.collection('users').doc(userId).snapshots().map((
+      snapshot,
+    ) {
+      final data = snapshot.data();
+      print("________________________ data in chatRepo.\"getUsersOnlineStatus\"");
+      print(data.toString());
+      return {
+        'isOnline': data?['isOnline'] ?? false,
+        'lastSeen': data?['lastSeen'],
+      };
+    });
+  }
+
+  Stream<Map<String, dynamic>> getUsersTypingStatus(String chatRoomId) {
+    return _chatRooms.doc('chatRooms').snapshots().map((snapshot) {
+      if (!snapshot.exists) {
+        return {'isTyping': false, 'isTypingUserId': null};
+      }
+      final data = snapshot.data() as Map<String, dynamic>;
+
+      print("________________________ data in \"getUsersTypingStatus\"");
+      print(data.toString());
+      return {
+        'isTyping': data['isTyping'] ?? false,
+        'isTypingUserId': data['isTypingUserId'],
+      };
+    });
+  }
+
+  Future<void> updateOnlineStats(String userId, bool isOnline) async {
+    return await firestore.collection('usres').doc(userId).update({
+      'isOnline': isOnline,
+      'lastSeen': Timestamp.now(),
+    });
   }
 }

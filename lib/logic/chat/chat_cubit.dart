@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:chat_app/data/repositories/chat_repo.dart';
 import 'package:chat_app/logic/chat/chat_state.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatCubit extends Cubit<ChatState> {
@@ -9,6 +10,8 @@ class ChatCubit extends Cubit<ChatState> {
   bool _isOnline = false;
 
   StreamSubscription? _messagesSubscription;
+  StreamSubscription? _onlineStatusSubscription;
+  StreamSubscription? _typingSubscription;
 
   ChatCubit({required ChatRepo chatRepository, required this.currentUserId})
     : _chatRepository = chatRepository,
@@ -16,6 +19,7 @@ class ChatCubit extends Cubit<ChatState> {
 
   Future<void> enterChat(String receiverId) async {
     _isOnline = true;
+    // _chatRepository.updateOnlineStats(currentUserId, true);
     emit(state.copyWith(status: ChatStatus.loding));
     print("_____________________________________isOnline");
     print(_isOnline);
@@ -36,6 +40,8 @@ class ChatCubit extends Cubit<ChatState> {
       );
       print("_________________________subscribeToMessages");
       _subscribeToMessages(chatRoom.id!);
+      _subscribeToOnlineStatus(receiverId);
+      _subscribeToTypingStatus(chatRoom.id!);
     } catch (e) {
       emit(
         state.copyWith(
@@ -129,6 +135,49 @@ class ChatCubit extends Cubit<ChatState> {
         );
   }
 
+  void _subscribeToOnlineStatus(String userId) {
+    _onlineStatusSubscription?.cancel();
+    _onlineStatusSubscription = _chatRepository
+        .getUsersOnlineStatus(userId)
+        .listen(
+          (status) {
+            final isOnline = status['isOnline'] as bool;
+            final lastSeen = status['lastSeen'] as Timestamp?;
+
+            emit(
+              state.copyWith(
+                isReceiverOnline: isOnline,
+                receiverLastSeen: lastSeen,
+              ),
+            );
+          },
+          onError: (error) {
+            print("Error getting online status");
+          },
+        );
+  }
+
+  void _subscribeToTypingStatus(String chatRoomId) {
+    _typingSubscription?.cancel();
+    _typingSubscription = _chatRepository
+        .getUsersTypingStatus(chatRoomId)
+        .listen(
+          (status) {
+            final isTyping = status['isTyping'] as bool;
+            final isTypingUserId = status['isTypingUserId'] as String;
+
+            emit(
+              state.copyWith(
+                isReceiverTyping: isTyping && isTypingUserId != currentUserId,
+              ),
+            );
+          },
+          onError: (error) {
+            print("Error getting online status");
+          },
+        );
+  }
+
   Future<void> _readTheUnreadMessages(String chatRoomId) async {
     try {
       print("________________ in cubit _readTheUnreadMessages");
@@ -139,8 +188,9 @@ class ChatCubit extends Cubit<ChatState> {
   }
 
   // added this to make "_isOnline" false whenever the user leaves
-  // or else it will always show that the messages were read by the receiver even tho he/she is not online 
+  // or else it will always show that the messages were read by the receiver even tho he/she is not online
   Future<void> leaveChat() async {
     _isOnline = false;
+    //     _chatRepository.updateOnlineStats(currentUserId, false);
   }
 }
