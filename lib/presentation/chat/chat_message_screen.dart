@@ -39,10 +39,6 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
       print('_________________user is null');
       return;
     }
-    print(user);
-
-    print('__________________ user is not null');
-
     _chatCubit = ChatCubit(chatRepository: ChatRepo(), currentUserId: user.uid);
     _chatCubit.enterChat(widget.receiverId);
   }
@@ -57,9 +53,6 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
   Future<void> handleSendingMessage() async {
     final contentMessage = message.text.trim();
     message.clear();
-
-    print("_____________________contentMessage");
-    print(contentMessage);
 
     await _chatCubit.sendMessage(
       content: contentMessage,

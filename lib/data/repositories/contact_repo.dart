@@ -30,11 +30,7 @@ class ContactRepo extends BaseRepositories {
         withProperties: true,
         withPhoto: true,
       );
-      print(
-        '--------------------------------------------Fetching the contacts from the Users mobile',
-      );
-      print(contacts);
-
+      
       // extract PhoneNumber and normalize them
       final phoneNumbers = contacts
           .where((contact) => contact.phones.isNotEmpty)
@@ -48,27 +44,13 @@ class ContactRepo extends BaseRepositories {
             },
           )
           .toList();
-      print(
-        '--------------------------------------------phoneNumbers in normalizs form',
-      );
-
-      print(phoneNumbers);
 
       // get all users from firebase
       final userSnapShot = await firestore.collection('users').get();
-      print('--------------------------------------------userSnapShot');
-      print(userSnapShot.docs.first);
 
       final registeredUsers = userSnapShot.docs
           .map((doc) => UserModel.fromFirestore(doc))
           .toList();
-      print('-------------------------------------------- registeredUsers');
-
-      for (var user in registeredUsers) {
-        // list all the phoneNumbers
-        print('Firestore user phone: ${user.phoneNumber}');
-      }
-
       // Match contact with registered User
       // So for contact to display the phone number from 'contacts' should match the phone number from 'firestore database'
 
@@ -92,9 +74,6 @@ class ContactRepo extends BaseRepositories {
             };
           })
           .toList();
-      print('-------------------------------------------- matchContacts ');
-
-      print(matchContacts);
       return matchContacts;
     } catch (e) {
       return [];

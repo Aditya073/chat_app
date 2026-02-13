@@ -22,15 +22,12 @@ class ChatCubit extends Cubit<ChatState> {
     _isOnline = true;
     // _chatRepository.updateOnlineStats(currentUserId, true);
     emit(state.copyWith(status: ChatStatus.loding));
-    print("_____________________________________isOnline");
-    print(_isOnline);
 
     try {
       final chatRoom = await _chatRepository.getOrCreateChatRoom(
         currentUserId,
         receiverId,
       );
-      // print("_______________________ the chatRoom was created");
 
       emit(
         state.copyWith(
@@ -39,7 +36,6 @@ class ChatCubit extends Cubit<ChatState> {
           status: ChatStatus.loaded,
         ),
       );
-      print("_________________________subscribeToMessages");
       _subscribeToMessages(chatRoom.id!);
       _subscribeToOnlineStatus(receiverId);
       _subscribeToTypingStatus(chatRoom.id!);
@@ -64,7 +60,6 @@ class ChatCubit extends Cubit<ChatState> {
 
       // If chatRoomId doesn't exist, create it
       if (chatRoomId.isEmpty) {
-        print("____________ creating chatRoom");
 
         final chatRoom = await _chatRepository.getOrCreateChatRoom(
           currentUserId,
@@ -85,8 +80,6 @@ class ChatCubit extends Cubit<ChatState> {
         _subscribeToMessages(chatRoomId);
       }
 
-      print("____________________sending message to:");
-      print(chatRoomId);
 
       await _chatRepository.sendMessage(
         chatRoomId: chatRoomId,
@@ -111,8 +104,6 @@ class ChatCubit extends Cubit<ChatState> {
         .getMessages(chatRoomId)
         .listen(
           (messages) {
-            print("_______________________messages");
-            print(messages);
             emit(
               state.copyWith(
                 messages: messages,
@@ -203,7 +194,6 @@ class ChatCubit extends Cubit<ChatState> {
 
   Future<void> _readTheUnreadMessages(String chatRoomId) async {
     try {
-      print("________________ in cubit _readTheUnreadMessages");
       await _chatRepository.readTheUnreadMessages(chatRoomId, currentUserId);
     } catch (e) {
       throw ("error marking messages as read $e");

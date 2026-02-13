@@ -96,9 +96,6 @@ class _HomeState extends State<Home> {
                           onTap: () {
                             // Should open the chat screen
 
-                            print(
-                              '______________navigating to the (ChatMessageScreen)',
-                            );
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -254,7 +251,6 @@ class _HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // on Click should display all the contacts
-          print('__________________the (floatingActionButton) was clicked');
           _showContactList(context);
         },
         elevation: 5,

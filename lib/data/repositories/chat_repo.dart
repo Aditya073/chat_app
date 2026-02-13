@@ -24,12 +24,7 @@ class ChatRepo extends BaseRepositories {
 
     if (roomDoc.exists) {
       // give the SnapShot to the "ChatRoomModel"
-      print("__________________________The chatRoom already exists");
       return ChatRoomModel.fromFirestore(roomDoc);
-    }
-
-    if (!roomDoc.exists) {
-      print("__________________________The chatRoom does not exists");
     }
 
     final currentUserData = // this will get the data of the particular user from "firestore.collection('users')"
@@ -57,7 +52,6 @@ class ChatRepo extends BaseRepositories {
     );
 
     await firestore.collection('chatRooms').doc(roomId).set(newRoom.toMap());
-    print("_______________________the chatRoom is now created");
     return newRoom;
   }
 
@@ -95,8 +89,6 @@ class ChatRepo extends BaseRepositories {
     });
 
     await batch.commit();
-    print("____________________ Users message content");
-    print(content);
   }
 
   // get the above messages
@@ -198,8 +190,6 @@ class ChatRepo extends BaseRepositories {
       snapshot,
     ) {
       final data = snapshot.data();
-      print("________________________ data in chatRepo.\"getUsersOnlineStatus\"");
-      print(data.toString());
       return {
         'isOnline': data?['isOnline'] ?? false,
         'lastSeen': data?['lastSeen'],
@@ -212,7 +202,6 @@ class ChatRepo extends BaseRepositories {
     try {
       final doc = await _chatRooms.doc(chatRoomId).get();
       if (!doc.exists) {
-        print("chat room does not exist");
         return;
       }
       await _chatRooms.doc(chatRoomId).update({
@@ -220,7 +209,7 @@ class ChatRepo extends BaseRepositories {
         'isTypingUserId': isTyping ? userId : null,
       });
     } catch (e) {
-      print("error updating typing status");
+      print("error updating typing status $e");
     }
   }
 
@@ -231,8 +220,6 @@ class ChatRepo extends BaseRepositories {
       }
       final data = snapshot.data() as Map<String, dynamic>;
 
-      print("________________________ data in \"getUsersTypingStatus\"");
-      print(data.toString());
       return {
         'isTyping': data['isTyping'] ?? false,
         'isTypingUserId': data['isTypingUserId'],
