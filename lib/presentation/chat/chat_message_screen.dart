@@ -66,18 +66,17 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Expanded(
-          child: Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: Theme.of(
-                  context,
-                ).primaryColor.withOpacity(0.1),
-                child: Text(widget.receiverName[0]),
-              ),
-              SizedBox(width: 12),
-              Column(
+        title: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+              child: Text(widget.receiverName[0]),
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     widget.receiverName,
@@ -103,19 +102,20 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                             color: Colors.greenAccent,
                           ),
                         );
-                      } else {
+                      }if (state.receiverLastSeen != null) {
                         final lastSeen = state.receiverLastSeen!.toDate();
                         return Text(
                           'last seen ${DateFormat('h:mm a').format(lastSeen)}',
                           style: TextStyle(fontSize: 12, color: Colors.black54),
                         );
                       }
+                      return const SizedBox();
                     },
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         actions: [IconButton(onPressed: () {}, icon: Icon(Icons.more_vert))],
       ),
