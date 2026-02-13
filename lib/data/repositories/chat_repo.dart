@@ -207,6 +207,23 @@ class ChatRepo extends BaseRepositories {
     });
   }
 
+  Future<void> updateTypingStatus(
+      String chatRoomId, String userId, bool isTyping) async {
+    try {
+      final doc = await _chatRooms.doc(chatRoomId).get();
+      if (!doc.exists) {
+        print("chat room does not exist");
+        return;
+      }
+      await _chatRooms.doc(chatRoomId).update({
+        'isTyping': isTyping,
+        'isTypingUserId': isTyping ? userId : null,
+      });
+    } catch (e) {
+      print("error updating typing status");
+    }
+  }
+
   Stream<Map<String, dynamic>> getUsersTypingStatus(String chatRoomId) {
     return _chatRooms.doc('chatRooms').snapshots().map((snapshot) {
       if (!snapshot.exists) {

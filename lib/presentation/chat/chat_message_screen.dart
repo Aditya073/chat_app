@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chat_app/data/models/chat_message.dart';
 import 'package:chat_app/data/repositories/chat_repo.dart';
 import 'package:chat_app/logic/chat/chat_cubit.dart';
@@ -25,6 +27,8 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
   late final ChatMessage messageStatusUpdate;
   late final ChatCubit _chatCubit;
 
+  bool _isCompossing = false;
+
   @override
   void initState() {
     super.initState();
@@ -46,6 +50,7 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
   @override
   void dispose() {
     _chatCubit.leaveChat();
+    message.addListener(onTextChange);
     super.dispose();
   }
 
@@ -60,6 +65,18 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
       content: contentMessage,
       receiverId: widget.receiverId,
     );
+  }
+
+  void onTextChange() {
+    final isCompossing = message.text.isNotEmpty;
+    if (isCompossing != _isCompossing) {
+      setState(() {
+        _isCompossing = isCompossing;
+      });
+    }
+    if (isCompossing) {
+      _chatCubit.startTyping();
+    }
   }
 
   @override
@@ -102,7 +119,8 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                             color: Colors.greenAccent,
                           ),
                         );
-                      }if (state.receiverLastSeen != null) {
+                      }
+                      if (state.receiverLastSeen != null) {
                         final lastSeen = state.receiverLastSeen!.toDate();
                         return Text(
                           'last seen ${DateFormat('h:mm a').format(lastSeen)}',

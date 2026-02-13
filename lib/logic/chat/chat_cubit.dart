@@ -8,6 +8,7 @@ class ChatCubit extends Cubit<ChatState> {
   final ChatRepo _chatRepository;
   final String currentUserId;
   bool _isOnline = false;
+  Timer? typingTimer;
 
   StreamSubscription? _messagesSubscription;
   StreamSubscription? _onlineStatusSubscription;
@@ -176,6 +177,28 @@ class ChatCubit extends Cubit<ChatState> {
             print("Error getting online status");
           },
         );
+  }
+
+  void startTyping() {
+    if (state.chatRoomId == null) {
+      print("(state.chatRoomId == null)");
+      return;
+    }
+    typingTimer?.cancel();
+    typingTimer = Timer(const Duration(seconds: 3), () {
+      _updateTypingStatus(false);
+    });
+  }
+
+  Future<void> _updateTypingStatus(bool isTyping) async {
+    if (state.chatRoomId == null) return;
+
+    try {
+      await _chatRepository.updateTypingStatus(
+          state.chatRoomId!, currentUserId, isTyping);
+    } catch (e) {
+      print("error updating typing status $e");
+    }
   }
 
   Future<void> _readTheUnreadMessages(String chatRoomId) async {
