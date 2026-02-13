@@ -66,52 +66,56 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            CircleAvatar(
-              backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-              child: Text(widget.receiverName[0]),
-            ),
-            SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.receiverName,
-                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
-                ),
+        title: Expanded(
+          child: Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: Theme.of(
+                  context,
+                ).primaryColor.withOpacity(0.1),
+                child: Text(widget.receiverName[0]),
+              ),
+              SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.receiverName,
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                  ),
 
-                // isOnline, isTyping, lastSeen
-                BlocBuilder<ChatCubit, ChatState>(
-                  bloc: _chatCubit,
-                  builder: (context, state) {
-                    if (state.isReceiverTyping) {
-                      return Text(
-                        'Typing...',
-                        style: TextStyle(fontSize: 12, color: Colors.black54),
-                      );
-                    }
+                  // isOnline, isTyping, lastSeen
+                  BlocBuilder<ChatCubit, ChatState>(
+                    bloc: _chatCubit,
+                    builder: (context, state) {
+                      if (state.isReceiverTyping) {
+                        return Text(
+                          'Typing...',
+                          style: TextStyle(fontSize: 12, color: Colors.black54),
+                        );
+                      }
 
-                    if (state.isReceiverOnline) {
-                      return Text(
-                        'Online',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.greenAccent,
-                        ),
-                      );
-                    } else {
-                      final lastSeen = state.receiverLastSeen!.toDate();
-                      return Text(
-                        'last seen ${DateFormat('h:mm a').format(lastSeen)}',
-                        style: TextStyle(fontSize: 12, color: Colors.black54),
-                      );
-                    }
-                  },
-                ),
-              ],
-            ),
-          ],
+                      if (state.isReceiverOnline) {
+                        return Text(
+                          'Online',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.greenAccent,
+                          ),
+                        );
+                      } else {
+                        final lastSeen = state.receiverLastSeen!.toDate();
+                        return Text(
+                          'last seen ${DateFormat('h:mm a').format(lastSeen)}',
+                          style: TextStyle(fontSize: 12, color: Colors.black54),
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
         actions: [IconButton(onPressed: () {}, icon: Icon(Icons.more_vert))],
       ),
